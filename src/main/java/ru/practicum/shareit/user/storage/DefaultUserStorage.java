@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Component
-public class DefaultUserStorage implements UserStorage{
+public class DefaultUserStorage implements UserStorage {
     private final Map<Long, User> storage = new HashMap<>();
     private Set<String> emails = new HashSet<>();
     private long counterId = 1;

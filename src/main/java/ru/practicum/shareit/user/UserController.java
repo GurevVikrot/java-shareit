@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,7 +42,7 @@ public class UserController {
     @PatchMapping("/{id}")
     public UserDto updateUser(@RequestBody UserDto userDto,
                               @PathVariable @Positive long id) {
-        log.info("Обновление id = {} пользователя: {}", id,userDto);
+        log.info("Обновление id = {} пользователя: {}", id, userDto);
         return userService.updateUser(userDto, id);
     }
 
