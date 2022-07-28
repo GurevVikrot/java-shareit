@@ -12,11 +12,7 @@ import java.time.LocalDate;
  */
 public class Booking {
     private long id;
-    @NotNull
-    @FutureOrPresent
     private LocalDate start;
-    @NotNull
-    @Future
     private LocalDate end;
     private long itemId;
     private long bookerId;
