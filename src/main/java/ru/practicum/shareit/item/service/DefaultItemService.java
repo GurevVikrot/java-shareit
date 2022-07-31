@@ -3,11 +3,12 @@ package ru.practicum.shareit.item.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.practicum.shareit.exeption.StorageException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
-import ru.practicum.shareit.util.StorageException;
+import ru.practicum.shareit.requests.storage.RequestStorage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,17 +21,26 @@ import java.util.stream.Collectors;
 public class DefaultItemService implements ItemService {
     private final ItemMapper itemMapper;
     private final ItemStorage itemStorage;
+    private final RequestStorage requestStorage;
 
     @Autowired
-    public DefaultItemService(ItemMapper itemMapper, ItemStorage itemStorage) {
+    public DefaultItemService(ItemMapper itemMapper, ItemStorage itemStorage, RequestStorage requestStorage) {
         this.itemMapper = itemMapper;
         this.itemStorage = itemStorage;
+        this.requestStorage = requestStorage;
     }
 
     @Override
     public ItemDto createItem(ItemDto itemDto, long userId) {
         if (!checkId(itemDto)) {
             throw new StorageException("Невозможно создать вещь, неверный формат id");
+        }
+
+        // Если вещь добавляется по запросу другого пользователя, проверяем существует ли он
+        if (itemDto.getRequest() != null) {
+            if (!requestStorage.requestExist(itemDto.getRequest().getRequestId())) {
+                throw new StorageException("Запроса на вещь не существует, попробуйте создание без привязки к запросу");
+            }
         }
 
         Item item = itemMapper.toItem(itemDto, userId);

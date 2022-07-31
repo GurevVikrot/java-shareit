@@ -1,4 +1,4 @@
-package ru.practicum.shareit.util;
+package ru.practicum.shareit.exeption;
 
 public class StorageException extends RuntimeException {
     public StorageException(String massage) {

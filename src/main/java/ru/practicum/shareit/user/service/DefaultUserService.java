@@ -7,7 +7,7 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserStorage;
-import ru.practicum.shareit.util.StorageException;
+import ru.practicum.shareit.exeption.StorageException;
 
 import javax.validation.ValidationException;
 import java.util.List;

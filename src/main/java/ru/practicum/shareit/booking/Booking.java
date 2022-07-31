@@ -1,5 +1,8 @@
 package ru.practicum.shareit.booking;
 
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.model.User;
+
 import java.time.LocalDate;
 
 /**
@@ -10,7 +13,7 @@ public class Booking {
     private long id;
     private LocalDate start;
     private LocalDate end;
-    private long itemId;
-    private long bookerId;
+    private Item item;
+    private User taker;
     private BookingStatus status;
 }

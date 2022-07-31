@@ -1,8 +1,8 @@
 package ru.practicum.shareit.user.storage;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+import ru.practicum.shareit.exeption.ConflictException;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.util.ConflictException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,10 +12,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-@Component
+@Repository
 public class DefaultUserStorage implements UserStorage {
     private final Map<Long, User> storage = new HashMap<>();
-    private Set<String> emails = new HashSet<>();
+    private final Set<String> emails = new HashSet<>();
     private long counterId = 1;
 
     private long getCounterId() {

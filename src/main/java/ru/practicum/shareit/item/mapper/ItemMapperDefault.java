@@ -7,7 +7,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.requests.storage.RequestStorage;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserStorage;
-import ru.practicum.shareit.util.StorageException;
+import ru.practicum.shareit.exeption.StorageException;
 
 @Component
 public class ItemMapperDefault implements ItemMapper {
@@ -32,13 +32,6 @@ public class ItemMapperDefault implements ItemMapper {
     @Override
     public Item toItem(ItemDto itemDto, long userId) {
         User owner = userStorage.get(userId).orElseThrow(() -> new StorageException("Пользователя не существует"));
-
-        // Если вещь добавляется по запросу другого пользователя, проверяем существует ли он
-        if (itemDto.getRequest() != null) {
-            if (!requestStorage.requestExist(itemDto.getRequest().getRequestId())) {
-                throw new StorageException("Запроса на вещь не существует, попробуйте создание без привязки к запросу");
-            }
-        }
 
         return new Item(
                 itemDto.getId(),

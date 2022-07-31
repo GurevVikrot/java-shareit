@@ -1,8 +1,8 @@
 package ru.practicum.shareit.item.storage;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+import ru.practicum.shareit.exeption.StorageException;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.util.StorageException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@Component
+@Repository
 public class DefaultItemStorage implements ItemStorage {
     private final Map<Long, Item> storage = new HashMap<>();
     private long counterId = 1;
