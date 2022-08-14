@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoBookings;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
@@ -51,13 +52,14 @@ public class ItemController {
     }
 
     @GetMapping("/{id}")
-    public ItemDto getItem(@PathVariable @Positive long id) {
+    public ItemDtoBookings getItem(@PathVariable @Positive long id,
+                           @RequestHeader("X-Sharer-User-Id") @Positive long userId) {
         log.info("Получен запрос на вещь id = {}", id);
-        return itemService.getItem(id);
+        return itemService.getItem(id, userId);
     }
 
     @GetMapping
-    public List<ItemDto> getAllUserItems(@RequestHeader("X-Sharer-User-Id") @Positive long userId) {
+    public List<ItemDtoBookings> getAllUserItems(@RequestHeader("X-Sharer-User-Id") @Positive long userId) {
         log.info("Получен запрос все вещей пользователя id = {}", userId);
         return itemService.getAllUserItems(userId);
     }

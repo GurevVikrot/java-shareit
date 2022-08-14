@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exeption.StorageException;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoBookings;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
@@ -43,7 +44,7 @@ public class DefaultItemService implements ItemService {
             }
         }
 
-        Item item = itemMapper.toItem(itemDto, userId);
+        Item item = itemMapper.toItem(itemDto);
 
         return itemMapper.toItemDto(getFromOptional(itemStorage.save(item)));
     }
@@ -56,22 +57,23 @@ public class DefaultItemService implements ItemService {
             throw new StorageException("Невозможно обновить вещь, ее не существует");
         }
 
-        Item item = itemMapper.toItem(itemDto, userId);
+        Item item = itemMapper.toItem(itemDto);
+
 
         return itemMapper.toItemDto(getFromOptional(itemStorage.update(item)));
     }
 
     @Override
-    public ItemDto getItem(long id) {
-        return itemMapper.toItemDto(getFromOptional(itemStorage.get(id)));
+    public ItemDtoBookings getItem(long id, long userId) {
+        return itemMapper.toItemBookingDto(getFromOptional(itemStorage.get(id)));
     }
 
     @Override
-    public List<ItemDto> getAllUserItems(long userId) {
+    public List<ItemDtoBookings> getAllUserItems(long userId) {
         return itemStorage.getAll().stream()
                 .filter(Objects::nonNull)
                 .filter(item -> item.getOwner().getId() == userId)
-                .map(itemMapper::toItemDto)
+                .map(itemMapper::toItemBookingDto)
                 .collect(Collectors.toList());
     }
 
