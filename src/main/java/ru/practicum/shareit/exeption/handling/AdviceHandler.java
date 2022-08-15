@@ -35,8 +35,8 @@ public class AdviceHandler {
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<Map<String,String>> errorHandler(){
-        Map<String,String> resp = new HashMap<>();
+    public ResponseEntity<Map<String, String>> errorHandler() {
+        Map<String, String> resp = new HashMap<>();
         resp.put("error", "Unknown state: UNSUPPORTED_STATUS");
         return new ResponseEntity<>(resp, HttpStatus.BAD_REQUEST);
     }

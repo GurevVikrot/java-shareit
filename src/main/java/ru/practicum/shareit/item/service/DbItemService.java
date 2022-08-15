@@ -9,6 +9,11 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exeption.StorageException;
+import ru.practicum.shareit.exeption.ValidationException;
+import ru.practicum.shareit.item.comment.dto.CommentDto;
+import ru.practicum.shareit.item.comment.mapper.CommentMapper;
+import ru.practicum.shareit.item.comment.model.Comment;
+import ru.practicum.shareit.item.comment.repository.CommentRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoBookings;
 import ru.practicum.shareit.item.mapper.ItemMapper;
@@ -19,6 +24,7 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 import ru.practicum.shareit.util.OptionalTaker;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,13 +32,15 @@ import java.util.stream.Collectors;
 @Service
 @Primary
 @Slf4j
-public class DbItemService implements ItemService{
+public class DbItemService implements ItemService {
     private final ItemMapper itemMapper;
     private final ItemRepository itemRepository;
     private final RequestsRepository requestsRepository;
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
     private final BookingMapper bookingMapper;
+    private final CommentRepository commentRepository;
+    private final CommentMapper commentMapper;
 
     @Autowired
     public DbItemService(ItemMapper itemMapper,
@@ -40,13 +48,17 @@ public class DbItemService implements ItemService{
                          RequestsRepository requestsRepository,
                          UserRepository userRepository,
                          BookingRepository bookingRepository,
-                         BookingMapper bookingMapper) {
+                         BookingMapper bookingMapper,
+                         CommentRepository commentRepository,
+                         CommentMapper commentMapper) {
         this.itemMapper = itemMapper;
         this.itemRepository = itemRepository;
         this.requestsRepository = requestsRepository;
         this.userRepository = userRepository;
         this.bookingRepository = bookingRepository;
         this.bookingMapper = bookingMapper;
+        this.commentRepository = commentRepository;
+        this.commentMapper = commentMapper;
     }
 
     @Override
@@ -110,6 +122,8 @@ public class DbItemService implements ItemService{
             itemBookings.setNextBooking(getNextBooking(id));
         }
 
+        itemBookings.setComments(getCommentsDtoList(id));
+
         return itemBookings;
     }
 
@@ -117,8 +131,9 @@ public class DbItemService implements ItemService{
     public List<ItemDtoBookings> getAllUserItems(long userId) {
         return itemRepository.findAllByOwner_Id(userId).stream()
                 .map(itemMapper::toItemBookingDto)
-                .peek((item) -> item.setLastBooking(getLastBooking(item.getId())))
-                .peek((item) -> item.setNextBooking(getNextBooking(item.getId())))
+                .peek(item -> item.setLastBooking(getLastBooking(item.getId())))
+                .peek(item -> item.setNextBooking(getNextBooking(item.getId())))
+                .peek(item -> item.setComments(getCommentsDtoList(item.getId())))
                 .collect(Collectors.toList());
     }
 
@@ -132,6 +147,27 @@ public class DbItemService implements ItemService{
                 .filter(Item::getAvailable)
                 .map(itemMapper::toItemDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public CommentDto addComment(long itemId, long userId, String text) {
+        if (text == null || text.isEmpty()) {
+            throw new ValidationException("Текст отзыва не должен быть пустым");
+        } else if (!itemRepository.existsById(itemId)) {
+            throw new StorageException("Вещи не существует");
+        } else if (!userRepository.existsById(userId)) {
+            throw new StorageException("Пользователя не существует");
+        }
+
+        Booking booking = OptionalTaker.getBooking(bookingRepository.findLastBooker_IdAndItem_Id(userId, itemId));
+
+        if (booking.getEnd().isAfter(LocalDateTime.now())) {
+            throw new ValidationException("Можно оставить комментарий только к завершенному бронированию");
+        }
+
+        Comment comment = new Comment(0, text.trim(), booking.getBooker(), booking.getItem(), LocalDateTime.now());
+
+        return commentMapper.toCommentDto(commentRepository.save(comment));
     }
 
     private boolean checkId(ItemDto itemDto) {
@@ -164,5 +200,17 @@ public class DbItemService implements ItemService{
         }
 
         return bookingMapper.toItemBooking(booking);
+    }
+
+    private List<CommentDto> getCommentsDtoList(long itemId) {
+        List<Comment> comments = commentRepository.findAllByItem_Id(itemId);
+
+        if (comments != null && !comments.isEmpty()) {
+            return comments.stream()
+                    .map(commentMapper::toCommentDto)
+                    .collect(Collectors.toList());
+        }
+
+        return new ArrayList<>();
     }
 }

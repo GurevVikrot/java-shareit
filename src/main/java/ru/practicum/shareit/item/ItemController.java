@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.shareit.item.comment.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoBookings;
 import ru.practicum.shareit.item.service.ItemService;
@@ -19,6 +20,7 @@ import ru.practicum.shareit.item.service.ItemService;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.util.List;
+import java.util.Map;
 
 /**
  * // TODO .
@@ -53,7 +55,7 @@ public class ItemController {
 
     @GetMapping("/{id}")
     public ItemDtoBookings getItem(@PathVariable @Positive long id,
-                           @RequestHeader("X-Sharer-User-Id") @Positive long userId) {
+                                   @RequestHeader("X-Sharer-User-Id") @Positive long userId) {
         log.info("Получен запрос на вещь id = {}", id);
         return itemService.getItem(id, userId);
     }
@@ -68,5 +70,13 @@ public class ItemController {
     public List<ItemDto> searchByText(@RequestParam String text) {
         log.info("Получен запрос на поиск вещи = {}", text);
         return itemService.searchItems(text);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto postComment(@PathVariable @Positive long itemId,
+                                  @RequestHeader("X-Sharer-User-Id") @Positive long userId,
+                                  @RequestBody Map<String, String> request) {
+        log.info("Запрос добавления комментария от userId {} к itemId {}", userId, itemId);
+        return itemService.addComment(itemId, userId, request.get("text"));
     }
 }

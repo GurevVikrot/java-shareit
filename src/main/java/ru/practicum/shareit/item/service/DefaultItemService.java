@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exeption.StorageException;
+import ru.practicum.shareit.item.comment.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoBookings;
 import ru.practicum.shareit.item.mapper.ItemMapper;
@@ -87,6 +88,11 @@ public class DefaultItemService implements ItemService {
                 .filter(Item::getAvailable)
                 .map(itemMapper::toItemDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public CommentDto addComment(long itemId, long userId, String text) {
+        throw new StorageException("Метод не реализован");
     }
 
     private boolean checkId(ItemDto itemDto) {
