@@ -10,7 +10,7 @@ import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.user.mapper.UserMapper;
 
 @Component
-public class DefaultBookingMapper implements BookingMapper{
+public class DefaultBookingMapper implements BookingMapper {
     private final UserMapper userMapper;
     private final ItemMapper itemMapper;
 
@@ -32,14 +32,13 @@ public class DefaultBookingMapper implements BookingMapper{
 
     @Override
     public ResponseBookingDto toResponseBooking(Booking booking) {
-        return ResponseBookingDto.builder().
-                id(booking.getId()).
-                start(booking.getStart()).
-                end(booking.getEnd()).
-                item(itemMapper.toItemDto(booking.getItem())).
-                booker(userMapper.toUserDto(booking.getBooker())).
-                status(booking.getStatus()).
-                build();
+        return ResponseBookingDto.builder()
+                .id(booking.getId())
+                .start(booking.getStart())
+                .end(booking.getEnd())
+                .item(itemMapper.toItemDto(booking.getItem()))
+                .booker(userMapper.toUserDto(booking.getBooker()))
+                .status(booking.getStatus()).build();
     }
 
     @Override

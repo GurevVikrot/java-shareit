@@ -174,14 +174,14 @@ public class DbBookingService implements BookingService {
                 bookings = bookingRepository.findFutureOwnerBookings(userId, LocalDateTime.now());
                 break;
             case WAITING:
-                bookings = bookingRepository.findOwnerBookings(userId).stream().
-                        filter(booking -> booking.getStatus().equals(BookingStatus.WAITING)).
-                        collect(Collectors.toList());
+                bookings = bookingRepository.findOwnerBookings(userId).stream()
+                        .filter(booking -> booking.getStatus().equals(BookingStatus.WAITING))
+                .collect(Collectors.toList());
                 break;
             case REJECTED:
-                bookings = bookingRepository.findOwnerBookings(userId).stream().
-                        filter(booking -> booking.getStatus().equals(BookingStatus.REJECTED)).
-                        collect(Collectors.toList());
+                bookings = bookingRepository.findOwnerBookings(userId).stream()
+                        .filter(booking -> booking.getStatus().equals(BookingStatus.REJECTED))
+                        . collect(Collectors.toList());
                 break;
         }
 

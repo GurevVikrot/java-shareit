@@ -7,6 +7,8 @@ import ru.practicum.shareit.booking.dto.ResponseBookingDto;
 
 public interface BookingMapper {
     Booking toBooking(RequestBookingDto requestBookingDto);
+
     ResponseBookingDto toResponseBooking(Booking booking);
+
     BookingDto toItemBooking(Booking booking);
 }

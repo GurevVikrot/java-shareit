@@ -15,15 +15,15 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findByBooker_Id(long bookerId, Sort sort);
 
     // Прошлые бронирования
-    List<Booking> findByBooker_IdAndEndIsBefore(long bookerId, LocalDateTime end_date, Sort sort);
+    List<Booking> findByBooker_IdAndEndIsBefore(long bookerId, LocalDateTime endDate, Sort sort);
 
     // Текущие бронирования
     List<Booking> findByBooker_IdAndStartIsBeforeAndEndIsAfter(
-            long booker_id, LocalDateTime nowStart, LocalDateTime nowEnd, Sort sort);
+            long bookerId, LocalDateTime nowStart, LocalDateTime nowEnd, Sort sort);
 
     // Будущие бронирования пользователя
     List<Booking> findByBooker_idAndStartIsAfter(
-            long booker_id, LocalDateTime now, Sort sort);
+            long bookerId, LocalDateTime now, Sort sort);
 
     // Заявки со статусом - status = WAITING, REJECTED
     List<Booking> findByBooker_IdAndStatusIs(long bookerId, BookingStatus status, Sort sort);
