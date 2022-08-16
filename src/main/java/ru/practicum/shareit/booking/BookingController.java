@@ -46,8 +46,8 @@ public class BookingController {
 
     @PatchMapping("/{bookingId}")
     public ResponseBookingDto approveBooking(@PathVariable @Positive long bookingId,
-                                            @RequestParam @NotNull Boolean approved,
-                                            @RequestHeader("X-Sharer-User-Id") @Positive long userId) {
+                                             @RequestParam @NotNull Boolean approved,
+                                             @RequestHeader("X-Sharer-User-Id") @Positive long userId) {
         log.info("Получен запрос на подтверждение бронирования {} от пользователя {}", bookingId, userId);
         return bookingService.approveBooking(bookingId, userId, approved);
     }
@@ -63,7 +63,7 @@ public class BookingController {
     public List<ResponseBookingDto> getBookingsForUser(
             @RequestParam(required = false, defaultValue = "ALL") State state,
             @RequestHeader("X-Sharer-User-Id") @Positive long userId) {
-        log.info("Запрос на получение бронирований типа {} пользователя {}",state, userId);
+        log.info("Запрос на получение бронирований типа {} пользователя {}", state, userId);
         return bookingService.getUserBookings(state, userId);
     }
 
@@ -71,7 +71,7 @@ public class BookingController {
     public List<ResponseBookingDto> getBookingsForOwner(
             @RequestParam(required = false, defaultValue = "ALL") State state,
             @RequestHeader("X-Sharer-User-Id") @Positive long userId) {
-        log.info("Запрос на получение бронирований типа {} владельца вещей {}",state, userId);
+        log.info("Запрос на получение бронирований типа {} владельца вещей {}", state, userId);
         return bookingService.getOwnerBookings(state, userId);
     }
 }

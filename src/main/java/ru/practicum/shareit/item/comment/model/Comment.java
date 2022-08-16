@@ -25,19 +25,19 @@ public class Comment {
     @Id
     @Column(name = "comment_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
+    private Long id;
 
     @Column(name = "text")
-    String text;
+    private String text;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
-    User author;
+    private User author;
 
     @ManyToOne
     @JoinColumn(name = "item_id", referencedColumnName = "item_id")
-    Item item;
+    private Item item;
 
     @Column(name = "creation_date")
-    LocalDateTime creationDate;
+    private LocalDateTime creationDate;
 }

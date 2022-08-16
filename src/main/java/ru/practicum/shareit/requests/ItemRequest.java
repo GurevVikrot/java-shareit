@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -26,12 +27,12 @@ public class ItemRequest {
     @Id
     @Column(name = "request_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long requestId;
+    private Long requestId;
 
     @Column(name = "description")
     private String description;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "requester_id", referencedColumnName = "user_id")
     private User requester;
 

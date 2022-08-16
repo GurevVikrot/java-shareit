@@ -154,7 +154,7 @@ public class DbBookingService implements BookingService {
             throw new StorageException("Пользователь не найден");
         }
 
-        if (itemRepository.findAllByOwner_Id(userId).isEmpty()) {
+        if (itemRepository.findAllByOwner_IdOrderById(userId).isEmpty()) {
             return new ArrayList<>();
         }
 
@@ -176,12 +176,12 @@ public class DbBookingService implements BookingService {
             case WAITING:
                 bookings = bookingRepository.findOwnerBookings(userId).stream()
                         .filter(booking -> booking.getStatus().equals(BookingStatus.WAITING))
-                .collect(Collectors.toList());
+                        .collect(Collectors.toList());
                 break;
             case REJECTED:
                 bookings = bookingRepository.findOwnerBookings(userId).stream()
                         .filter(booking -> booking.getStatus().equals(BookingStatus.REJECTED))
-                        . collect(Collectors.toList());
+                        .collect(Collectors.toList());
                 break;
         }
 

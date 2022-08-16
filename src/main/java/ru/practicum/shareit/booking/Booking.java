@@ -14,7 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -31,7 +31,7 @@ public class Booking {
     @Id
     @Column(name = "booking_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "start_date")
     private LocalDateTime start;
@@ -39,11 +39,11 @@ public class Booking {
     @Column(name = "end_date")
     private LocalDateTime end;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "item_id", referencedColumnName = "item_id")
     private Item item;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "booker_id", referencedColumnName = "user_id")
     private User booker;
 

@@ -129,7 +129,7 @@ public class DbItemService implements ItemService {
 
     @Override
     public List<ItemDtoBookings> getAllUserItems(long userId) {
-        return itemRepository.findAllByOwner_Id(userId).stream()
+        return itemRepository.findAllByOwner_IdOrderById(userId).stream()
                 .map(itemMapper::toItemBookingDto)
                 .peek(item -> item.setLastBooking(getLastBooking(item.getId())))
                 .peek(item -> item.setNextBooking(getNextBooking(item.getId())))
@@ -150,9 +150,9 @@ public class DbItemService implements ItemService {
     }
 
     @Override
-    public CommentDto addComment(long itemId, long userId, String text) {
-        if (text == null || text.isEmpty()) {
-            throw new ValidationException("Текст отзыва не должен быть пустым");
+    public CommentDto addComment(long itemId, long userId, CommentDto commentDto) {
+        if (commentDto.getText() == null || commentDto.getText().isEmpty()) {
+            throw new ValidationException("Комментарий не может быть пустым");
         } else if (!itemRepository.existsById(itemId)) {
             throw new StorageException("Вещи не существует");
         } else if (!userRepository.existsById(userId)) {
@@ -165,7 +165,9 @@ public class DbItemService implements ItemService {
             throw new ValidationException("Можно оставить комментарий только к завершенному бронированию");
         }
 
-        Comment comment = new Comment(0, text.trim(), booking.getBooker(), booking.getItem(), LocalDateTime.now());
+        Comment comment = commentMapper.toComment(commentDto);
+        comment.setAuthor(booking.getBooker());
+        comment.setItem(booking.getItem());
 
         return commentMapper.toCommentDto(commentRepository.save(comment));
     }

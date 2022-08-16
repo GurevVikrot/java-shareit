@@ -13,15 +13,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class CommentDto {
     @Positive
-    long id;
+    private long id;
 
     @NotBlank
     @Size(max = 521)
-    String text;
+    private String text;
 
     @NotBlank
-    String authorName;
+    private String authorName;
 
     @Past
-    LocalDateTime created;
+    private LocalDateTime created;
 }

@@ -20,7 +20,6 @@ import ru.practicum.shareit.item.service.ItemService;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.util.List;
-import java.util.Map;
 
 /**
  * // TODO .
@@ -75,8 +74,8 @@ public class ItemController {
     @PostMapping("/{itemId}/comment")
     public CommentDto postComment(@PathVariable @Positive long itemId,
                                   @RequestHeader("X-Sharer-User-Id") @Positive long userId,
-                                  @RequestBody Map<String, String> request) {
+                                  @RequestBody CommentDto commentDto) {
         log.info("Запрос добавления комментария от userId {} к itemId {}", userId, itemId);
-        return itemService.addComment(itemId, userId, request.get("text"));
+        return itemService.addComment(itemId, userId, commentDto);
     }
 }

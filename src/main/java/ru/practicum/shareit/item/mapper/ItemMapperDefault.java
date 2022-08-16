@@ -28,7 +28,6 @@ public class ItemMapperDefault implements ItemMapper {
                 itemDto.getRequest());
     }
 
-    // Сущность ДТО для предоставления
     @Override
     public ItemDtoBookings toItemBookingDto(Item item) {
         return new ItemDtoBookings(item.getId(),

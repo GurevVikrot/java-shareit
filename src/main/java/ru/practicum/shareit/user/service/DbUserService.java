@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exeption.StorageException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
@@ -81,13 +80,7 @@ public class DbUserService implements UserService {
     @Override
     public boolean deleteUser(long id) {
         userRepository.deleteById(id);
-
-        if (!userRepository.existsById(id)) {
-            log.info("Пользователь удален id = {}", id);
-            return true;
-        }
-
-        throw new StorageException("Пользователя не существует");
+        return true;
     }
 
     private boolean checkId(UserDto userDto) {

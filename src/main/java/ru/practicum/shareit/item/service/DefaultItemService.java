@@ -91,7 +91,7 @@ public class DefaultItemService implements ItemService {
     }
 
     @Override
-    public CommentDto addComment(long itemId, long userId, String text) {
+    public CommentDto addComment(long itemId, long userId, CommentDto commentDto) {
         throw new StorageException("Метод не реализован");
     }
 

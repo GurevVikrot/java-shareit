@@ -5,4 +5,6 @@ import ru.practicum.shareit.item.comment.model.Comment;
 
 public interface CommentMapper {
     CommentDto toCommentDto(Comment comment);
+
+    Comment toComment(CommentDto commentDto);
 }
