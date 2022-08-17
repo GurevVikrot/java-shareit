@@ -16,11 +16,11 @@ import ru.practicum.shareit.exeption.ValidationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.storage.UserRepository;
-import ru.practicum.shareit.util.OptionalTaker;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,7 +51,8 @@ public class DbBookingService implements BookingService {
             throw new StorageException("Вещи не существует");
         }
 
-        Item item = OptionalTaker.getItem(itemRepository.findById(bookingDto.getItemId()));
+        Item item = itemRepository.findById(bookingDto.getItemId()).orElseThrow(
+                () -> new StorageException("Ошибка получения вещи"));
 
         if (!item.getAvailable()) {
             throw new ValidationException("Вещь не доступна для бронирования");
@@ -61,7 +62,8 @@ public class DbBookingService implements BookingService {
 
         Booking booking = bookingMapper.toBooking(bookingDto);
         booking.setItem(item);
-        booking.setBooker(OptionalTaker.getUser(userRepository.findById(bookerId)));
+        booking.setBooker(userRepository.findById(bookerId).orElseThrow(
+                () -> new StorageException("Ошибка получения пользователя")));
         booking.setStatus(BookingStatus.WAITING);
 
         return bookingMapper.toResponseBooking(bookingRepository.save(booking));
@@ -76,7 +78,7 @@ public class DbBookingService implements BookingService {
             throw new StorageException("Бронирования не существует");
         }
 
-        Booking booking = OptionalTaker.getBooking(bookingRepository.findById(bookingId));
+        Booking booking = getBookingFromOptional(bookingRepository.findById(bookingId));
 
         if (booking.getStatus() != BookingStatus.WAITING) {
             throw new ValidationException("Изменение статуса не возможно");
@@ -99,7 +101,7 @@ public class DbBookingService implements BookingService {
             throw new StorageException("Бронирования не существует");
         }
 
-        Booking booking = OptionalTaker.getBooking(bookingRepository.findById(bookingId));
+        Booking booking = getBookingFromOptional(bookingRepository.findById(bookingId));
 
         if (userId == booking.getBooker().getId() ||
                 userId == booking.getItem().getOwner().getId()) {
@@ -192,5 +194,9 @@ public class DbBookingService implements BookingService {
 
     private Sort getSort() {
         return Sort.by(Sort.Direction.DESC, "start");
+    }
+
+    private Booking getBookingFromOptional(Optional<Booking> bookingOptional) {
+        return bookingOptional.orElseThrow(() -> new StorageException("Ошибка получения бронирования"));
     }
 }

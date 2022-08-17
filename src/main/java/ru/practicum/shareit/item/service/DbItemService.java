@@ -22,11 +22,11 @@ import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.requests.storage.RequestsRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
-import ru.practicum.shareit.util.OptionalTaker;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -89,7 +89,7 @@ public class DbItemService implements ItemService {
         }
 
         Item itemToUpdate = itemMapper.toItem(itemDto);
-        Item itemFromBd = OptionalTaker.getItem(itemRepository.findById(id));
+        Item itemFromBd = getItemFromOptional(itemRepository.findById(id));
 
         if (itemFromBd.getOwner().getId() != userId) {
             throw new StorageException("У пользователя не найдено обновляемой вещи");
@@ -114,7 +114,7 @@ public class DbItemService implements ItemService {
 
     @Override
     public ItemDtoBookings getItem(long id, long userId) {
-        Item item = OptionalTaker.getItem(itemRepository.findById(id));
+        Item item = getItemFromOptional(itemRepository.findById(id));
         ItemDtoBookings itemBookings = itemMapper.toItemBookingDto(item);
 
         if (item.getOwner().getId() == userId) {
@@ -159,7 +159,8 @@ public class DbItemService implements ItemService {
             throw new StorageException("Пользователя не существует");
         }
 
-        Booking booking = OptionalTaker.getBooking(bookingRepository.findLastBooker_IdAndItem_Id(userId, itemId));
+        Booking booking = bookingRepository.findLastBooker_IdAndItem_Id(userId, itemId).orElseThrow(
+                () -> new StorageException("Ошибка получения бронирования"));
 
         if (booking.getEnd().isAfter(LocalDateTime.now())) {
             throw new ValidationException("Можно оставить комментарий только к завершенному бронированию");
@@ -214,5 +215,9 @@ public class DbItemService implements ItemService {
         }
 
         return new ArrayList<>();
+    }
+
+    private Item getItemFromOptional(Optional<Item> itemOptional) {
+        return itemOptional.orElseThrow(() -> new StorageException("Ошибка получения вещи"));
     }
 }

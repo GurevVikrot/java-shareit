@@ -4,14 +4,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exeption.StorageException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
-import ru.practicum.shareit.util.OptionalTaker;
 
 import javax.validation.ValidationException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,7 +50,7 @@ public class DbUserService implements UserService {
         }
 
         User userToUpdate = userMapper.toUser(userDto);
-        User userFromDb = OptionalTaker.getUser(userRepository.findById(id));
+        User userFromDb = getUserFromOptional(userRepository.findById(id));
 
         if (userToUpdate.getName() == null) {
             userToUpdate.setName(userFromDb.getName());
@@ -74,7 +75,7 @@ public class DbUserService implements UserService {
 
     @Override
     public UserDto getUser(long id) {
-        return userMapper.toUserDto(OptionalTaker.getUser(userRepository.findById(id)));
+        return userMapper.toUserDto(getUserFromOptional(userRepository.findById(id)));
     }
 
     @Override
@@ -85,5 +86,9 @@ public class DbUserService implements UserService {
 
     private boolean checkId(UserDto userDto) {
         return userDto.getId() == 0 && !userRepository.existsById(userDto.getId());
+    }
+
+    private User getUserFromOptional(Optional<User> optionalUser) {
+        return optionalUser.orElseThrow(() -> new StorageException("Ошибка получения пользователя"));
     }
 }
