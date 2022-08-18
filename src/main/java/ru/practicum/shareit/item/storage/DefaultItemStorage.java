@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @Repository
@@ -28,7 +29,7 @@ public class DefaultItemStorage implements ItemStorage {
 
     @Override
     public Optional<Item> update(Item item) {
-        if (storage.get(item.getId()).getOwner().getId() != item.getOwner().getId()) {
+        if (!Objects.equals(storage.get(item.getId()).getOwner().getId(), item.getOwner().getId())) {
             throw new StorageException("Невозможно обновить вещь другого пользователя");
         }
 
