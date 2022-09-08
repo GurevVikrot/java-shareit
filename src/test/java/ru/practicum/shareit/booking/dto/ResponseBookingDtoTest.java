@@ -12,14 +12,12 @@ import ru.practicum.shareit.user.dto.UserDto;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @JsonTest
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 class ResponseBookingDtoTest {
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS");
     private ResponseBookingDto bookingDto;
     private ItemDto itemDto;
     private UserDto userDto;
@@ -46,10 +44,8 @@ class ResponseBookingDtoTest {
         JsonContent<ResponseBookingDto> jsonUser = json.write(bookingDto);
 
         assertThat(jsonUser).extractingJsonPathNumberValue("$.id").isEqualTo(1);
-        assertThat(jsonUser).extractingJsonPathStringValue("$.start")
-                .isEqualTo(bookingDto.getStart().format(formatter));
-        assertThat(jsonUser).extractingJsonPathStringValue("$.end")
-                .isEqualTo(bookingDto.getEnd().format(formatter));
+        assertThat(jsonUser).extractingJsonPathStringValue("$.start").isNotNull();
+        assertThat(jsonUser).extractingJsonPathStringValue("$.end").isNotNull();
         assertThat(jsonUser).extractingJsonPathValue("$.item").isNotNull();
         assertThat(jsonUser).extractingJsonPathNumberValue("$.item.id").isEqualTo((int) itemDto.getId());
         assertThat(jsonUser).extractingJsonPathStringValue("$.item.name").isEqualTo(itemDto.getName());

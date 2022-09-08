@@ -21,7 +21,6 @@ import ru.practicum.shareit.user.dto.UserDto;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
@@ -36,8 +35,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(BookingController.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class BookingControllerTest {
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS");
-
     @Autowired
     private ObjectMapper mapper;
 
@@ -79,8 +76,8 @@ class BookingControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is((int) responseBookingDto.getId())))
-                .andExpect(jsonPath("$.start", is(responseBookingDto.getStart().format(formatter))))
-                .andExpect(jsonPath("$.end", is(responseBookingDto.getEnd().format(formatter))))
+                .andExpect(jsonPath("$.start", notNullValue()))
+                .andExpect(jsonPath("$.end", notNullValue()))
                 .andExpect(jsonPath("$.item", notNullValue()))
                 .andExpect(jsonPath("$.item.id", is((int) itemDto.getId())))
                 .andExpect(jsonPath("$.item.name", is(itemDto.getName())))
@@ -224,8 +221,8 @@ class BookingControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is((int) responseBookingDto.getId())))
-                .andExpect(jsonPath("$.start", is(responseBookingDto.getStart().format(formatter))))
-                .andExpect(jsonPath("$.end", is(responseBookingDto.getEnd().format(formatter))))
+                .andExpect(jsonPath("$.start", notNullValue()))
+                .andExpect(jsonPath("$.end", notNullValue()))
                 .andExpect(jsonPath("$.item", notNullValue()))
                 .andExpect(jsonPath("$.item.id", is((int) itemDto.getId())))
                 .andExpect(jsonPath("$.item.name", is(itemDto.getName())))
@@ -246,8 +243,8 @@ class BookingControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is((int) responseBookingDto.getId())))
-                .andExpect(jsonPath("$.start", is(responseBookingDto.getStart().format(formatter))))
-                .andExpect(jsonPath("$.end", is(responseBookingDto.getEnd().format(formatter))))
+                .andExpect(jsonPath("$.start", notNullValue()))
+                .andExpect(jsonPath("$.end", notNullValue()))
                 .andExpect(jsonPath("$.item", notNullValue()))
                 .andExpect(jsonPath("$.item.id", is((int) itemDto.getId())))
                 .andExpect(jsonPath("$.item.name", is(itemDto.getName())))
@@ -325,8 +322,8 @@ class BookingControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is((int) responseBookingDto.getId())))
-                .andExpect(jsonPath("$.start", is(responseBookingDto.getStart().format(formatter))))
-                .andExpect(jsonPath("$.end", is(responseBookingDto.getEnd().format(formatter))))
+                .andExpect(jsonPath("$.start", notNullValue()))
+                .andExpect(jsonPath("$.end", notNullValue()))
                 .andExpect(jsonPath("$.item", notNullValue()))
                 .andExpect(jsonPath("$.item.id", is((int) itemDto.getId())))
                 .andExpect(jsonPath("$.item.name", is(itemDto.getName())))
@@ -341,7 +338,7 @@ class BookingControllerTest {
     }
 
     @Test
-    void getBookingWithIncorrectValues() throws Exception {
+    void getBookingWithIncorrectValues() {
         assertThrows(NestedServletException.class,
                 () -> mvc.perform(get("/bookings/0")
                                 .header("X-Sharer-User-Id", "1")
@@ -389,8 +386,8 @@ class BookingControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.[0].id", is((int) responseBookingDto.getId())))
-                .andExpect(jsonPath("$.[0].start", is(responseBookingDto.getStart().format(formatter))))
-                .andExpect(jsonPath("$.[0].end", is(responseBookingDto.getEnd().format(formatter))))
+                .andExpect(jsonPath("$.[0].start", notNullValue()))
+                .andExpect(jsonPath("$.[0].end", notNullValue()))
                 .andExpect(jsonPath("$.[0].item", notNullValue()))
                 .andExpect(jsonPath("$.[0].item.id", is((int) itemDto.getId())))
                 .andExpect(jsonPath("$.[0].item.name", is(itemDto.getName())))
@@ -413,8 +410,8 @@ class BookingControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.[0].id", is((int) responseBookingDto.getId())))
-                .andExpect(jsonPath("$.[0].start", is(responseBookingDto.getStart().format(formatter))))
-                .andExpect(jsonPath("$.[0].end", is(responseBookingDto.getEnd().format(formatter))))
+                .andExpect(jsonPath("$.[0].start", notNullValue()))
+                .andExpect(jsonPath("$.[0].end", notNullValue()))
                 .andExpect(jsonPath("$.[0].item", notNullValue()))
                 .andExpect(jsonPath("$.[0].item.id", is((int) itemDto.getId())))
                 .andExpect(jsonPath("$.[0].item.name", is(itemDto.getName())))
@@ -586,8 +583,8 @@ class BookingControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.[0].id", is((int) responseBookingDto.getId())))
-                .andExpect(jsonPath("$.[0].start", is(responseBookingDto.getStart().format(formatter))))
-                .andExpect(jsonPath("$.[0].end", is(responseBookingDto.getEnd().format(formatter))))
+                .andExpect(jsonPath("$.[0].start", notNullValue()))
+                .andExpect(jsonPath("$.[0].end", notNullValue()))
                 .andExpect(jsonPath("$.[0].item", notNullValue()))
                 .andExpect(jsonPath("$.[0].item.id", is((int) itemDto.getId())))
                 .andExpect(jsonPath("$.[0].item.name", is(itemDto.getName())))
@@ -610,8 +607,8 @@ class BookingControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.[0].id", is((int) responseBookingDto.getId())))
-                .andExpect(jsonPath("$.[0].start", is(responseBookingDto.getStart().format(formatter))))
-                .andExpect(jsonPath("$.[0].end", is(responseBookingDto.getEnd().format(formatter))))
+                .andExpect(jsonPath("$.[0].start", notNullValue()))
+                .andExpect(jsonPath("$.[0].end", notNullValue()))
                 .andExpect(jsonPath("$.[0].item", notNullValue()))
                 .andExpect(jsonPath("$.[0].item.id", is((int) itemDto.getId())))
                 .andExpect(jsonPath("$.[0].item.name", is(itemDto.getName())))

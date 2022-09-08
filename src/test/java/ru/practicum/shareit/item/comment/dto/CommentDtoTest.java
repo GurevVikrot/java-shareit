@@ -13,7 +13,6 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 class CommentDtoTest {
     private static Validator validator;
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS");
     private CommentDto commentDto;
     @Autowired
     private JacksonTester<CommentDto> json;
@@ -46,8 +44,7 @@ class CommentDtoTest {
         assertThat(jsonUser).extractingJsonPathStringValue("$.text").isEqualTo(commentDto.getText());
         assertThat(jsonUser).extractingJsonPathStringValue("$.authorName")
                 .isEqualTo(commentDto.getAuthorName());
-        assertThat(jsonUser).extractingJsonPathStringValue("$.created")
-                .isEqualTo(commentDto.getCreated().format(formatter));
+        assertThat(jsonUser).extractingJsonPathStringValue("$.created").isNotNull();
     }
 
     @Test

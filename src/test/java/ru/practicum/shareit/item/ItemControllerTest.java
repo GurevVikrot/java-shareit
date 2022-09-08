@@ -20,7 +20,6 @@ import ru.practicum.shareit.item.service.ItemService;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +36,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ItemController.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class ItemControllerTest {
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS");
     private final BookingDto lastBookingDto = new BookingDto(1,
             LocalDateTime.now().minusDays(2),
             LocalDateTime.now().minusDays(1), 1L, BookingStatus.APPROVED);
@@ -304,14 +302,14 @@ class ItemControllerTest {
                 .andExpect(jsonPath("$.request", is(itemDtoBookings.getRequest())))
                 .andExpect(jsonPath("$.lastBooking", notNullValue()))
                 .andExpect(jsonPath("$.lastBooking.id", is((int) lastBookingDto.getId())))
-                .andExpect(jsonPath("$.lastBooking.start", is(lastBookingDto.getStart().format(formatter))))
-                .andExpect(jsonPath("$.lastBooking.end", is(lastBookingDto.getEnd().format(formatter))))
+                .andExpect(jsonPath("$.lastBooking.start", notNullValue()))
+                .andExpect(jsonPath("$.lastBooking.end", notNullValue()))
                 .andExpect(jsonPath("$.lastBooking.bookerId", is((int) lastBookingDto.getBookerId())))
                 .andExpect(jsonPath("$.lastBooking.status", is(lastBookingDto.getStatus().toString())))
                 .andExpect(jsonPath("$.nextBooking", notNullValue()))
                 .andExpect(jsonPath("$.nextBooking.id", is((int) nextBookingDto.getId())))
-                .andExpect(jsonPath("$.nextBooking.start", is(nextBookingDto.getStart().format(formatter))))
-                .andExpect(jsonPath("$.nextBooking.end", is(nextBookingDto.getEnd().format(formatter))))
+                .andExpect(jsonPath("$.nextBooking.start", notNullValue()))
+                .andExpect(jsonPath("$.nextBooking.end", notNullValue()))
                 .andExpect(jsonPath("$.nextBooking.bookerId", is((int) nextBookingDto.getBookerId())))
                 .andExpect(jsonPath("$.nextBooking.status", is(nextBookingDto.getStatus().toString())))
                 .andExpect(jsonPath("$.comments", notNullValue()))
@@ -372,14 +370,14 @@ class ItemControllerTest {
                 .andExpect(jsonPath("$.[0].request", is(itemDtoBookings.getRequest())))
                 .andExpect(jsonPath("$.[0].lastBooking", notNullValue()))
                 .andExpect(jsonPath("$.[0].lastBooking.id", is((int) lastBookingDto.getId())))
-                .andExpect(jsonPath("$.[0].lastBooking.start", is(lastBookingDto.getStart().format(formatter))))
-                .andExpect(jsonPath("$.[0].lastBooking.end", is(lastBookingDto.getEnd().format(formatter))))
+                .andExpect(jsonPath("$.[0].lastBooking.start", notNullValue()))
+                .andExpect(jsonPath("$.[0].lastBooking.end", notNullValue()))
                 .andExpect(jsonPath("$.[0].lastBooking.bookerId", is((int) lastBookingDto.getBookerId())))
                 .andExpect(jsonPath("$.[0].lastBooking.status", is(lastBookingDto.getStatus().toString())))
                 .andExpect(jsonPath("$.[0].nextBooking", notNullValue()))
                 .andExpect(jsonPath("$.[0].nextBooking.id", is((int) nextBookingDto.getId())))
-                .andExpect(jsonPath("$.[0].nextBooking.start", is(nextBookingDto.getStart().format(formatter))))
-                .andExpect(jsonPath("$.[0].nextBooking.end", is(nextBookingDto.getEnd().format(formatter))))
+                .andExpect(jsonPath("$.[0].nextBooking.start", notNullValue()))
+                .andExpect(jsonPath("$.[0].nextBooking.end", notNullValue()))
                 .andExpect(jsonPath("$.[0].nextBooking.bookerId", is((int) nextBookingDto.getBookerId())))
                 .andExpect(jsonPath("$.[0].nextBooking.status", is(nextBookingDto.getStatus().toString())))
                 .andExpect(jsonPath("$.[0].comments", notNullValue()))
@@ -521,7 +519,7 @@ class ItemControllerTest {
                 .andExpect(jsonPath("$.id", is((int) comment.getId())))
                 .andExpect(jsonPath("$.text", is(comment.getText())))
                 .andExpect(jsonPath("$.authorName", is(comment.getAuthorName())))
-                .andExpect(jsonPath("$.created", is(comment.getCreated().format(formatter))));
+                .andExpect(jsonPath("$.created", notNullValue()));
 
         CommentDto commentDto = new CommentDto(0, "text", null, null);
 

@@ -15,7 +15,6 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 class ItemRequestDtoTest {
     private static Validator validator;
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS");
     private ItemRequestDto itemRequestDto;
     private UserDto userDto;
     private ItemDto itemDto;
@@ -68,7 +66,7 @@ class ItemRequestDtoTest {
                 .isEqualTo(itemDto.getAvailable());
         assertThat(jsonItemRequest).extractingJsonPathNumberValue("$.items.[0].requestId")
                 .isEqualTo(itemDto.getRequestId().intValue());
-        assertThat(jsonItemRequest).extractingJsonPathStringValue("$.created").isEqualTo(now.format(formatter));
+        assertThat(jsonItemRequest).extractingJsonPathStringValue("$.created").isNotNull();
     }
 
     @Test

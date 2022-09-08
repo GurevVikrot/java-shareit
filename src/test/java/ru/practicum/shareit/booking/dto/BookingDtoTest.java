@@ -10,14 +10,12 @@ import ru.practicum.shareit.booking.status.BookingStatus;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @JsonTest
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 class BookingDtoTest {
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS");
     private BookingDto bookingDto;
 
     @Autowired
@@ -34,14 +32,12 @@ class BookingDtoTest {
     }
 
     @Test
-    void testUserDto() throws IOException {
+    void testBookingDto() throws IOException {
         JsonContent<BookingDto> jsonUser = json.write(bookingDto);
 
         assertThat(jsonUser).extractingJsonPathNumberValue("$.id").isEqualTo(1);
-        assertThat(jsonUser).extractingJsonPathStringValue("$.start")
-                .isEqualTo(bookingDto.getStart().format(formatter));
-        assertThat(jsonUser).extractingJsonPathStringValue("$.end")
-                .isEqualTo(bookingDto.getEnd().format(formatter));
+        assertThat(jsonUser).extractingJsonPathStringValue("$.start").isNotNull();
+        assertThat(jsonUser).extractingJsonPathStringValue("$.end").isNotNull();
         assertThat(jsonUser).extractingJsonPathNumberValue("$.bookerId").isEqualTo(1);
         assertThat(jsonUser).extractingJsonPathStringValue("$.status")
                 .isEqualTo(bookingDto.getStatus().toString());
