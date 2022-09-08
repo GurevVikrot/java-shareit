@@ -40,9 +40,9 @@ class IntegrationDbBookingServiceTest {
     private Booking bookingPast;
     private Booking bookingCurrent;
     private Booking bookingFuture;
-    private User user = new User(1L, "Vitya", "vitya@mail.ru");
-    private User booker = new User(2L, "Booker", "booker@mail.ru");
-    private Item item = new Item(1L, "Вещь", "Супер", true, user, null);
+    private final User user = new User(1L, "Vitya", "vitya@mail.ru");
+    private final User booker = new User(2L, "Booker", "booker@mail.ru");
+    private final Item item = new Item(1L, "Вещь", "Супер", true, user, null);
 
     @BeforeEach
     void beforeEach() {

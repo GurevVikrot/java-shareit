@@ -41,10 +41,10 @@ class DbBookingServiceTest {
             new UserMapperDefault(),
             new ItemMapperDefault());
 
-    private UserRepository mokUserRepository = Mockito.mock(UserRepository.class);
-    private ItemRepository mokItemRepository = Mockito.mock(ItemRepository.class);
-    private BookingRepository mokBookingRepository = Mockito.mock(BookingRepository.class);
-    private DbBookingService bookingService = new DbBookingService(
+    private final UserRepository mokUserRepository = Mockito.mock(UserRepository.class);
+    private final ItemRepository mokItemRepository = Mockito.mock(ItemRepository.class);
+    private final BookingRepository mokBookingRepository = Mockito.mock(BookingRepository.class);
+    private final DbBookingService bookingService = new DbBookingService(
             mokUserRepository,
             mokItemRepository,
             mokBookingRepository,
@@ -53,13 +53,13 @@ class DbBookingServiceTest {
     private RequestBookingDto requestBookingDto;
     private ResponseBookingDto responseBookingDto;
     private Booking bookingFromBd;
-    private LocalDateTime start = LocalDateTime.now().plusDays(1);
-    private LocalDateTime end = LocalDateTime.now().plusDays(3);
-    private User user = new User(1L, "Vitya", "vitya@mail.ru");
-    private User booker = new User(2L, "Booker", "booker@mail.ru");
-    private UserDto bookerDto = new UserDto(2L, "Booker", "booker@mail.ru");
-    private Item item = new Item(1L, "Вещь", "Супер", true, user, null);
-    private ItemDto itemDto = new ItemDto(1L, "Вещь", "Супер", true, null);
+    private final LocalDateTime start = LocalDateTime.now().plusDays(1);
+    private final LocalDateTime end = LocalDateTime.now().plusDays(3);
+    private final User user = new User(1L, "Vitya", "vitya@mail.ru");
+    private final User booker = new User(2L, "Booker", "booker@mail.ru");
+    private final UserDto bookerDto = new UserDto(2L, "Booker", "booker@mail.ru");
+    private final Item item = new Item(1L, "Вещь", "Супер", true, user, null);
+    private final ItemDto itemDto = new ItemDto(1L, "Вещь", "Супер", true, null);
 
 
     @BeforeEach

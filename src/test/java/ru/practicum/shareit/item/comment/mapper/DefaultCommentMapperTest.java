@@ -19,7 +19,7 @@ class DefaultCommentMapperTest {
     private static CommentMapper commentMapper;
     private CommentDto commentDto;
     private Comment comment;
-    private LocalDateTime now = LocalDateTime.now();
+    private final LocalDateTime now = LocalDateTime.now();
 
     @BeforeAll
     public static void beforeAll() {

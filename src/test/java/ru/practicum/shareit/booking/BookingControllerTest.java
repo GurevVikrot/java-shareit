@@ -46,10 +46,10 @@ class BookingControllerTest {
 
     private RequestBookingDto requestBookingDto;
     private ResponseBookingDto responseBookingDto;
-    private LocalDateTime start = LocalDateTime.now().plusDays(1);
-    private LocalDateTime end = LocalDateTime.now().plusDays(3);
-    private UserDto bookerDto = new UserDto(2L, "Booker", "booker@mail.ru");
-    private ItemDto itemDto = new ItemDto(1L, "Вещь", "Супер", true, null);
+    private final LocalDateTime start = LocalDateTime.now().plusDays(1);
+    private final LocalDateTime end = LocalDateTime.now().plusDays(3);
+    private final UserDto bookerDto = new UserDto(2L, "Booker", "booker@mail.ru");
+    private final ItemDto itemDto = new ItemDto(1L, "Вещь", "Супер", true, null);
 
     @Autowired
     private void setUpService(BookingService bookingService) {

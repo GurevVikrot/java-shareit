@@ -41,8 +41,8 @@ class DefaultBookingMapperTest {
     private BookingDto bookingDto;
     private RequestBookingDto requestBookingDto;
     private ResponseBookingDto bookingDto1;
-    private LocalDateTime start = LocalDateTime.now().plusDays(1);
-    private LocalDateTime end = LocalDateTime.now().plusDays(3);
+    private final LocalDateTime start = LocalDateTime.now().plusDays(1);
+    private final LocalDateTime end = LocalDateTime.now().plusDays(3);
 
     @BeforeEach
     void beforeEach() {

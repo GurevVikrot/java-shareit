@@ -68,8 +68,8 @@ class DbItemServiceTest {
     private ItemDtoBookings itemDtoBookings;
     private Item item;
     private Item item1;
-    private User user = new User(1L, "Vitya", "vitya@mail.ru");
-    private ItemRequest itemRequest = new ItemRequest(1L, "Хочется", null, null, null);
+    private final User user = new User(1L, "Vitya", "vitya@mail.ru");
+    private final ItemRequest itemRequest = new ItemRequest(1L, "Хочется", null, null, null);
 
     @BeforeEach
     void beforeEach() {
