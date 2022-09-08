@@ -39,8 +39,8 @@ public class DefaultItemService implements ItemService {
         }
 
         // Если вещь добавляется по запросу другого пользователя, проверяем существует ли он
-        if (itemDto.getRequest() != null) {
-            if (!requestStorage.requestExist(itemDto.getRequest().getRequestId())) {
+        if (itemDto.getRequestId() != null) {
+            if (!requestStorage.requestExist(itemDto.getRequestId())) {
                 throw new StorageException("Запроса на вещь не существует, попробуйте создание без привязки к запросу");
             }
         }
@@ -70,7 +70,7 @@ public class DefaultItemService implements ItemService {
     }
 
     @Override
-    public List<ItemDtoBookings> getAllUserItems(long userId) {
+    public List<ItemDtoBookings> getAllUserItems(long userId, int from, int size) {
         return itemStorage.getAll().stream()
                 .filter(Objects::nonNull)
                 .filter(item -> item.getOwner().getId() == userId)
@@ -79,7 +79,7 @@ public class DefaultItemService implements ItemService {
     }
 
     @Override
-    public List<ItemDto> searchItems(String name) {
+    public List<ItemDto> searchItems(String name, int from, int size) {
         if (name.isEmpty()) {
             return new ArrayList<>();
         }

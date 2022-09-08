@@ -2,14 +2,16 @@ package ru.practicum.shareit.booking.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.booking.Booking;
-import ru.practicum.shareit.booking.BookingStatus;
-import ru.practicum.shareit.booking.State;
 import ru.practicum.shareit.booking.dto.RequestBookingDto;
 import ru.practicum.shareit.booking.dto.ResponseBookingDto;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.status.BookingStatus;
+import ru.practicum.shareit.booking.status.State;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exeption.StorageException;
 import ru.practicum.shareit.exeption.ValidationException;
@@ -74,6 +76,7 @@ public class DbBookingService implements BookingService {
         if (!userRepository.existsById(userId)) {
             throw new StorageException("Пользователь не найден");
         }
+
         if (!bookingRepository.existsById(bookingId)) {
             throw new StorageException("Бронирования не существует");
         }
@@ -106,41 +109,43 @@ public class DbBookingService implements BookingService {
         if (userId == booking.getBooker().getId() ||
                 userId == booking.getItem().getOwner().getId()) {
             return bookingMapper.toResponseBooking(booking);
-
         }
 
         throw new StorageException("Нет доступа к бронированию");
     }
 
     @Override
-    public List<ResponseBookingDto> getUserBookings(State state, long userId) {
-
+    public List<ResponseBookingDto> getUserBookings(State state, long userId, int from, int size) {
         if (!userRepository.existsById(userId)) {
             throw new StorageException("Пользователь не найден");
         }
 
+        Pageable pageable = PageRequest.of(from / size, size, getSort());
         List<Booking> bookings = new ArrayList<>();
 
         switch (state) {
             case ALL:
-                bookings = bookingRepository.findByBooker_Id(userId, getSort());
+                bookings = bookingRepository.findByBooker_IdIs(userId, pageable);
                 break;
             case PAST:
                 bookings = bookingRepository.findByBooker_IdAndEndIsBefore(
-                        userId, LocalDateTime.now(), getSort());
+                        userId, LocalDateTime.now(), pageable);
                 break;
             case CURRENT:
-                bookings = bookingRepository.findByBooker_IdAndStartIsBeforeAndEndIsAfter(userId,
-                        LocalDateTime.now(), LocalDateTime.now(), getSort());
+                bookings = bookingRepository.findByBooker_IdAndStartIsBeforeAndEndIsAfter(
+                        userId, LocalDateTime.now(), LocalDateTime.now(), pageable);
                 break;
             case FUTURE:
-                bookings = bookingRepository.findByBooker_idAndStartIsAfter(userId, LocalDateTime.now(), getSort());
+                bookings = bookingRepository.findByBooker_idAndStartIsAfter(
+                        userId, LocalDateTime.now(), pageable);
                 break;
             case WAITING:
-                bookings = bookingRepository.findByBooker_IdAndStatusIs(userId, BookingStatus.WAITING, getSort());
+                bookings = bookingRepository.findByBooker_IdAndStatusIs(
+                        userId, BookingStatus.WAITING, pageable);
                 break;
             case REJECTED:
-                bookings = bookingRepository.findByBooker_IdAndStatusIs(userId, BookingStatus.REJECTED, getSort());
+                bookings = bookingRepository.findByBooker_IdAndStatusIs(
+                        userId, BookingStatus.REJECTED, pageable);
                 break;
         }
 
@@ -150,38 +155,38 @@ public class DbBookingService implements BookingService {
     }
 
     @Override
-    public List<ResponseBookingDto> getOwnerBookings(State state, long userId) {
-
+    public List<ResponseBookingDto> getOwnerBookings(State state, long userId, int from, int size) {
         if (!userRepository.existsById(userId)) {
             throw new StorageException("Пользователь не найден");
         }
 
-        if (itemRepository.findAllByOwner_IdOrderById(userId).isEmpty()) {
+        if (itemRepository.findAllByOwner_IdOrderById(userId, PageRequest.of(0, 1)).isEmpty()) {
             return new ArrayList<>();
         }
 
+        Pageable pageable = PageRequest.of(from / size, size);
         List<Booking> bookings = new ArrayList<>();
 
         switch (state) {
             case ALL:
-                bookings = bookingRepository.findOwnerBookings(userId);
+                bookings = bookingRepository.findOwnerBookings(userId, pageable);
                 break;
             case PAST:
-                bookings = bookingRepository.findPastOwnerBookings(userId, LocalDateTime.now());
+                bookings = bookingRepository.findPastOwnerBookings(userId, LocalDateTime.now(), pageable);
                 break;
             case CURRENT:
-                bookings = bookingRepository.findCurrentOwnerBookings(userId, LocalDateTime.now());
+                bookings = bookingRepository.findCurrentOwnerBookings(userId, LocalDateTime.now(), pageable);
                 break;
             case FUTURE:
-                bookings = bookingRepository.findFutureOwnerBookings(userId, LocalDateTime.now());
+                bookings = bookingRepository.findFutureOwnerBookings(userId, LocalDateTime.now(), pageable);
                 break;
             case WAITING:
-                bookings = bookingRepository.findOwnerBookings(userId).stream()
+                bookings = bookingRepository.findOwnerBookings(userId, pageable).stream()
                         .filter(booking -> booking.getStatus().equals(BookingStatus.WAITING))
                         .collect(Collectors.toList());
                 break;
             case REJECTED:
-                bookings = bookingRepository.findOwnerBookings(userId).stream()
+                bookings = bookingRepository.findOwnerBookings(userId, pageable).stream()
                         .filter(booking -> booking.getStatus().equals(BookingStatus.REJECTED))
                         .collect(Collectors.toList());
                 break;

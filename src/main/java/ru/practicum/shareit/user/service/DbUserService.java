@@ -28,10 +28,9 @@ public class DbUserService implements UserService {
         this.userRepository = userRepository;
     }
 
-
     @Override
     public UserDto createUser(UserDto userDto) {
-        if (!checkId(userDto)) {
+        if (userDto == null || !checkId(userDto)) {
             throw new ValidationException("Невозможно создать пользователя с существующим id");
         }
 
@@ -43,11 +42,11 @@ public class DbUserService implements UserService {
 
     @Override
     public UserDto updateUser(UserDto userDto, long id) {
-        userDto.setId(id);
-
-        if (checkId(userDto)) {
+        if (!userRepository.existsById(id)) {
             throw new ValidationException("Невозможно обновить пользователя не верный формат id");
         }
+
+        userDto.setId(id);
 
         User userToUpdate = userMapper.toUser(userDto);
         User userFromDb = getUserFromOptional(userRepository.findById(id));

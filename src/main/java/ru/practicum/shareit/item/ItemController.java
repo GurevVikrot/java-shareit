@@ -18,7 +18,9 @@ import ru.practicum.shareit.item.dto.ItemDtoBookings;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 /**
@@ -60,21 +62,29 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDtoBookings> getAllUserItems(@RequestHeader("X-Sharer-User-Id") @Positive long userId) {
+    public List<ItemDtoBookings> getAllUserItems(@RequestParam(required = false, defaultValue = "0")
+                                                 @PositiveOrZero int from,
+                                                 @RequestParam(required = false, defaultValue = "10")
+                                                 @Positive int size,
+                                                 @RequestHeader("X-Sharer-User-Id") @Positive long userId) {
         log.info("Получен запрос все вещей пользователя id = {}", userId);
-        return itemService.getAllUserItems(userId);
+        return itemService.getAllUserItems(userId, from, size);
     }
 
     @GetMapping("/search")
-    public List<ItemDto> searchByText(@RequestParam String text) {
+    public List<ItemDto> searchByText(@RequestParam(required = false, defaultValue = "0")
+                                      @PositiveOrZero int from,
+                                      @RequestParam(required = false, defaultValue = "10")
+                                      @Positive int size,
+                                      @RequestParam @NotNull String text) {
         log.info("Получен запрос на поиск вещи = {}", text);
-        return itemService.searchItems(text);
+        return itemService.searchItems(text, from, size);
     }
 
     @PostMapping("/{itemId}/comment")
     public CommentDto postComment(@PathVariable @Positive long itemId,
                                   @RequestHeader("X-Sharer-User-Id") @Positive long userId,
-                                  @RequestBody CommentDto commentDto) {
+                                  @RequestBody @Valid CommentDto commentDto) {
         log.info("Запрос добавления комментария от userId {} к itemId {}", userId, itemId);
         return itemService.addComment(itemId, userId, commentDto);
     }

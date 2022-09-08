@@ -3,10 +3,12 @@ package ru.practicum.shareit.item.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exeption.StorageException;
 import ru.practicum.shareit.exeption.ValidationException;
@@ -67,15 +69,16 @@ public class DbItemService implements ItemService {
             throw new StorageException("Невозможно создать вещь, неверный формат id");
         }
 
-        // Если вещь добавляется по запросу другого пользователя, проверяем существует ли он
-        if (itemDto.getRequest() != null) {
-            if (!requestsRepository.existsById(itemDto.getRequest().getRequestId())) {
-                throw new StorageException("Запроса на вещь не существует, попробуйте создание без привязки к запросу");
-            }
-        }
-
         Item item = itemMapper.toItem(itemDto);
         item.setOwner(getUserFromDb(userId));
+
+        // Если вещь добавляется по запросу другого пользователя, проверяем существует ли он
+        if (itemDto.getRequestId() != null) {
+            item.setRequest(requestsRepository.findById(itemDto.getRequestId())
+                    .orElseThrow(
+                            () -> new StorageException("Запроса на вещь не существует," +
+                                    " попробуйте создание без привязки к запросу")));
+        }
 
         return itemMapper.toItemDto(itemRepository.save(item));
     }
@@ -84,7 +87,7 @@ public class DbItemService implements ItemService {
     public ItemDto updateItem(ItemDto itemDto, long id, long userId) {
         itemDto.setId(id);
 
-        if (checkId(itemDto)) {
+        if (!itemRepository.existsById(itemDto.getId())) {
             throw new StorageException("Невозможно обновить вещь, ее не существует");
         }
 
@@ -128,8 +131,10 @@ public class DbItemService implements ItemService {
     }
 
     @Override
-    public List<ItemDtoBookings> getAllUserItems(long userId) {
-        return itemRepository.findAllByOwner_IdOrderById(userId).stream()
+    public List<ItemDtoBookings> getAllUserItems(long userId, int from, int size) {
+        Pageable pageable = PageRequest.of(from / size, size);
+
+        return itemRepository.findAllByOwner_IdOrderById(userId, pageable).stream()
                 .map(itemMapper::toItemBookingDto)
                 .peek(item -> item.setLastBooking(getLastBooking(item.getId())))
                 .peek(item -> item.setNextBooking(getNextBooking(item.getId())))
@@ -138,12 +143,14 @@ public class DbItemService implements ItemService {
     }
 
     @Override
-    public List<ItemDto> searchItems(String name) {
+    public List<ItemDto> searchItems(String name, int from, int size) {
         if (name.isEmpty()) {
             return new ArrayList<>();
         }
 
-        return itemRepository.find(name.trim().toLowerCase()).stream()
+        Pageable pageable = PageRequest.of(from / size, size);
+
+        return itemRepository.find(name.trim().toLowerCase(), pageable).stream()
                 .filter(Item::getAvailable)
                 .map(itemMapper::toItemDto)
                 .collect(Collectors.toList());
@@ -151,9 +158,7 @@ public class DbItemService implements ItemService {
 
     @Override
     public CommentDto addComment(long itemId, long userId, CommentDto commentDto) {
-        if (commentDto.getText() == null || commentDto.getText().isEmpty()) {
-            throw new ValidationException("Комментарий не может быть пустым");
-        } else if (!itemRepository.existsById(itemId)) {
+        if (!itemRepository.existsById(itemId)) {
             throw new StorageException("Вещи не существует");
         } else if (!userRepository.existsById(userId)) {
             throw new StorageException("Пользователя не существует");
