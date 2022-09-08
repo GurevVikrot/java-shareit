@@ -58,7 +58,7 @@ class ItemDtoBookingsTest {
     }
 
     @Test
-    void JsonTestItemBookingDto() throws IOException {
+    void jsonTestItemBookingDto() throws IOException {
         JsonContent<ItemDtoBookings> jsonItem = json.write(itemDto);
 
         assertThat(jsonItem).extractingJsonPathNumberValue("$.id").isEqualTo(1);

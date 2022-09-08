@@ -25,7 +25,7 @@ class DbUserServiceTest {
 
 
     @BeforeEach
-    void BeforeEach() {
+    void beforeEach() {
         mokUserMapper = Mockito.mock(UserMapper.class);
         mokUserRepository = Mockito.mock(UserRepository.class);
         userService = new DbUserService(mokUserMapper, mokUserRepository);

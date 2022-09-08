@@ -41,7 +41,7 @@ class ItemRequestDtoTest {
     }
 
     @BeforeEach
-    void BeforeEach() {
+    void beforeEach() {
         itemDto = new ItemDto(1L, "Вещь", "Супер", true, 1L);
         userDto = new UserDto(0L, "Vitya", "vitya@mail.ru");
         now = LocalDateTime.now();

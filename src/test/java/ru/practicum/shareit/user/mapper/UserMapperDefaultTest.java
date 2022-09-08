@@ -20,7 +20,7 @@ class UserMapperDefaultTest {
     }
 
     @BeforeEach
-    void BeforeEach() {
+    void beforeEach() {
         user = new User(0L, "Vitya", "vitya@mail.ru");
         userDto = new UserDto(1L, "Petya", "Petya@mail.ru");
     }

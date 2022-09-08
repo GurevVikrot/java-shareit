@@ -40,11 +40,6 @@ class UserControllerTest {
     private MockMvc mvc;
     private UserDto userDto;
 
-    @Autowired
-    void UserControllerTestWithContext(UserService userService) {
-        this.mokUserService = userService;
-    }
-
     @BeforeEach
     void beforeEach() {
         userDto = new UserDto(0L, "Petya", "Petya@mail.ru");

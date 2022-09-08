@@ -54,7 +54,7 @@ class RequestBookingDtoTest {
     }
 
     @Test
-    void NotValideItemId() {
+    void notValideItemId() {
         assertEquals(0, validator.validate(bookingDto).size());
 
         bookingDto.setItemId(0);
@@ -65,7 +65,7 @@ class RequestBookingDtoTest {
     }
 
     @Test
-    void NotValideStart() {
+    void notValideStart() {
         bookingDto.setStart(null);
         assertEquals(1, validator.validate(bookingDto).size());
 
@@ -80,7 +80,7 @@ class RequestBookingDtoTest {
     }
 
     @Test
-    void NotValideEnd() {
+    void notValideEnd() {
         assertEquals(0, validator.validate(bookingDto).size());
 
         bookingDto.setEnd(null);

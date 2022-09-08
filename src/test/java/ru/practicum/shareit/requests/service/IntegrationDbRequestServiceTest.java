@@ -49,7 +49,7 @@ class IntegrationDbRequestServiceTest {
     private Item item;
 
     @BeforeEach
-    void BeforeEach() {
+    void beforeEach() {
         userRepository.save(user);
         userRepository.save(requester);
         now = LocalDateTime.now();
@@ -62,7 +62,7 @@ class IntegrationDbRequestServiceTest {
     }
 
     @Test
-    void GetOwnerRequestTest() {
+    void getOwnerRequestTest() {
         List<ItemRequestDto> requests = requestService.getOwnerRequests(2L);
 
         assertNotNull(requests);
@@ -78,7 +78,7 @@ class IntegrationDbRequestServiceTest {
     }
 
     @Test
-    void GetOwnerRequestWhenNotHaveRequestsAndNotOwnerTest() {
+    void getOwnerRequestWhenNotHaveRequestsAndNotOwnerTest() {
         List<ItemRequestDto> requests = requestService.getOwnerRequests(1L);
 
         assertNotNull(requests);
@@ -86,7 +86,7 @@ class IntegrationDbRequestServiceTest {
     }
 
     @Test
-    void GetOwnerRequestWhenUserNotExistTest() {
+    void getOwnerRequestWhenUserNotExistTest() {
         assertThrows(StorageException.class, () -> requestService.getOwnerRequests(5L));
     }
 }
