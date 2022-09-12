@@ -12,10 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 
-/**
- * // TODO .
- */
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,10 +23,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Email
-    @Column(name = "email")
+    @Column(name = "email", nullable = false)
     private String email;
 }

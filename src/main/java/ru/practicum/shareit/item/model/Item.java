@@ -20,10 +20,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-/**
- * // TODO .
- */
-
 @Builder
 @Data
 @AllArgsConstructor
@@ -38,19 +34,19 @@ public class Item {
 
     @NotBlank
     @Size(max = 50)
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
     @NotBlank
     @Size(max = 300)
-    @Column(name = "description")
+    @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "available")
+    @Column(name = "available", nullable = false)
     private Boolean available;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "owner", referencedColumnName = "user_id")
+    @JoinColumn(name = "owner", referencedColumnName = "user_id", nullable = false)
     private User owner;
 
     @ManyToOne(fetch = FetchType.LAZY)

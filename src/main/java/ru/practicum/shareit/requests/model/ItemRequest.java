@@ -19,10 +19,6 @@ import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * // TODO .
- */
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -34,16 +30,16 @@ public class ItemRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "description")
+    @Column(name = "description", nullable = false)
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "requester_id", referencedColumnName = "user_id")
+    @JoinColumn(name = "requester_id", referencedColumnName = "user_id", nullable = false)
     private User requester;
 
     @OneToMany(mappedBy = "request", fetch = FetchType.LAZY)
     private List<Item> items;
 
-    @Column(name = "created")
+    @Column(name = "created", nullable = false)
     private LocalDateTime created;
 }

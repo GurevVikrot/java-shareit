@@ -23,10 +23,6 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
-/**
- * // TODO .
- */
-
 @RestController
 @RequestMapping("/items")
 @Slf4j
