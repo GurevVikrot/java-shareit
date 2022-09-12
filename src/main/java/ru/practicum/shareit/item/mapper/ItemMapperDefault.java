@@ -11,10 +11,10 @@ public class ItemMapperDefault implements ItemMapper {
     @Override
     public ItemDto toItemDto(Item item) {
         return new ItemDto(item.getId(),
-                item.getName(),
-                item.getDescription(),
+                item.getName().trim(),
+                item.getDescription().trim(),
                 item.getAvailable(),
-                item.getRequest() != null ? item.getRequest() : null);
+                item.getRequest() != null ? item.getRequest().getId() : null);
     }
 
     @Override
@@ -25,14 +25,14 @@ public class ItemMapperDefault implements ItemMapper {
                 itemDto.getDescription() != null ? itemDto.getDescription().trim() : null,
                 itemDto.getAvailable(),
                 null,
-                itemDto.getRequest());
+                null);
     }
 
     @Override
     public ItemDtoBookings toItemBookingDto(Item item) {
         return new ItemDtoBookings(item.getId(),
-                item.getName(),
-                item.getDescription(),
+                item.getName().trim(),
+                item.getDescription().trim(),
                 item.getAvailable(),
                 item.getRequest() != null ? item.getRequest() : null,
                 null,

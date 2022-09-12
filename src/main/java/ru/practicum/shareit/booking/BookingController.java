@@ -15,15 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.shareit.booking.dto.RequestBookingDto;
 import ru.practicum.shareit.booking.dto.ResponseBookingDto;
 import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.booking.status.State;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
-
-/**
- * // TODO .
- */
 
 @Validated
 @RestController
@@ -61,17 +59,21 @@ public class BookingController {
 
     @GetMapping()
     public List<ResponseBookingDto> getBookingsForUser(
-            @RequestParam(required = false, defaultValue = "ALL") State state,
+            @RequestParam(required = false, defaultValue = "0") @PositiveOrZero int from,
+            @RequestParam(required = false, defaultValue = "10") @Positive int size,
+            @RequestParam(required = false, defaultValue = "ALL") @NotNull State state,
             @RequestHeader("X-Sharer-User-Id") @Positive long userId) {
         log.info("Запрос на получение бронирований типа {} пользователя {}", state, userId);
-        return bookingService.getUserBookings(state, userId);
+        return bookingService.getUserBookings(state, userId, from, size);
     }
 
     @GetMapping("/owner")
     public List<ResponseBookingDto> getBookingsForOwner(
+            @RequestParam(required = false, defaultValue = "0") @PositiveOrZero int from,
+            @RequestParam(required = false, defaultValue = "10") @Positive int size,
             @RequestParam(required = false, defaultValue = "ALL") State state,
             @RequestHeader("X-Sharer-User-Id") @Positive long userId) {
         log.info("Запрос на получение бронирований типа {} владельца вещей {}", state, userId);
-        return bookingService.getOwnerBookings(state, userId);
+        return bookingService.getOwnerBookings(state, userId, from, size);
     }
 }
