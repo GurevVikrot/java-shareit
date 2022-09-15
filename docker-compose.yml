@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   gateway:
-    build: /gateway
+    build: ./gateway
     container_name: geteway_shareit_container
     ports:
       - "8080:8080"
@@ -9,7 +9,7 @@ services:
       - SHAREIT_SERVER_URL=http://server:9090
 
   server:
-    build: /server
+    build: ./server
     container_name: server_shareit_container
     ports:
       - "9090:9090"
