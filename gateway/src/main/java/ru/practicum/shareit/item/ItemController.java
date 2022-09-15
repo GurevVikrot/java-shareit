@@ -9,7 +9,6 @@ import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -60,7 +59,7 @@ public class ItemController {
                                                @PositiveOrZero int from,
                                                @RequestParam(required = false, defaultValue = "10")
                                                @Positive int size,
-                                               @RequestParam @NotNull @NotBlank String text,
+                                               @RequestParam @NotNull String text,
                                                @RequestHeader(value = "X-Sharer-User-Id", required = false, defaultValue = "1") long userId) {
         log.info("Получен запрос на поиск вещи = {}", text);
         return itemClient.searchItems(text, from, size, userId);

@@ -499,6 +499,22 @@ class ItemControllerTest {
                 .andExpect(jsonPath("$.[0].description", is(itemDtoBody.get("description"))))
                 .andExpect(jsonPath("$.[0].available", is(itemDtoBody.get("available"))))
                 .andExpect(jsonPath("$.[0].requestId", is(itemDtoBody.get("requestId"))));
+
+        mvc.perform(get("/items/search?text=&size=1")
+                        .header("X-Sharer-User-Id", "1")
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.*", hasSize(1)));
+
+        mvc.perform(get("/items/search?text= &size=1")
+                        .header("X-Sharer-User-Id", "1")
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.*", hasSize(1)));
     }
 
     @Test
@@ -517,18 +533,6 @@ class ItemControllerTest {
 
         assertThrows(NestedServletException.class,
                 () -> mvc.perform(get("/items/search?text=Вещь&from=0&size=-1")
-                                .header("X-Sharer-User-Id", "1")
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest()));
-
-        assertThrows(NestedServletException.class,
-                () -> mvc.perform(get("/items/search?text=&from=0&size=-1")
-                                .header("X-Sharer-User-Id", "1")
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest()));
-
-        assertThrows(NestedServletException.class,
-                () -> mvc.perform(get("/items/search?text= &from=0&size=-1")
                                 .header("X-Sharer-User-Id", "1")
                                 .accept(MediaType.APPLICATION_JSON))
                         .andExpect(status().isBadRequest()));
