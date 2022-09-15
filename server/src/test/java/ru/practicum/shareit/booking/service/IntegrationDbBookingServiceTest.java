@@ -20,12 +20,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static ru.practicum.shareit.booking.status.State.ALL;
-import static ru.practicum.shareit.booking.status.State.CURRENT;
-import static ru.practicum.shareit.booking.status.State.FUTURE;
-import static ru.practicum.shareit.booking.status.State.PAST;
-import static ru.practicum.shareit.booking.status.State.REJECTED;
-import static ru.practicum.shareit.booking.status.State.WAITING;
+import static ru.practicum.shareit.booking.status.State.*;
 
 @SpringBootTest
 @AutoConfigureTestDatabase

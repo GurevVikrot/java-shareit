@@ -22,9 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -34,8 +33,8 @@ class ItemControllerTest {
     private final Map<String, Object> lastBookingDto = Map.of(
             "id", 1,
             "start", LocalDateTime.now().minusDays(2),
-            "end", LocalDateTime.now().minusDays(1), 
-            "bookerId", 1L, 
+            "end", LocalDateTime.now().minusDays(1),
+            "bookerId", 1L,
             "status", "APPROVED");
     private final Map<String, Object> nextBookingDto = Map.of(
             "id", 2,
@@ -43,12 +42,12 @@ class ItemControllerTest {
             "end", LocalDateTime.now().plusDays(1),
             "bookerId", 2L,
             "status", "APPROVED");
-    
+
     private Map<String, Object> itemDtoBody;
     private Map<String, Object> itemBookingDtoBody;
     private final Map<String, Object> comment = Map.of(
             "id", 1,
-            "text","Балдеж",
+            "text", "Балдеж",
             "authorName", "Vova",
             "created", LocalDateTime.now().minusDays(1));
     private ItemDto itemDto;
@@ -67,7 +66,7 @@ class ItemControllerTest {
     @BeforeEach
     void beforeEach() {
         itemDto = new ItemDto(0L, "Вещь", "Супер", true, null);
-        
+
         itemDtoBody = Map.of(
                 "id", 1L,
                 "name", "Вещь",
@@ -75,7 +74,7 @@ class ItemControllerTest {
                 "available", true,
                 "requestId", "null");
         itemDtoEntity = ResponseEntity.status(HttpStatus.OK).body(itemDtoBody);
-        
+
         itemBookingDtoBody = Map.of(
                 "id", 1L,
                 "name", "Вещь",
