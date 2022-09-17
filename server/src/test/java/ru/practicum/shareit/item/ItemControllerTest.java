@@ -10,7 +10,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.util.NestedServletException;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.status.BookingStatus;
 import ru.practicum.shareit.item.comment.dto.CommentDto;
@@ -24,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -92,104 +90,6 @@ class ItemControllerTest {
     }
 
     @Test
-    void createWithInvalideField() throws Exception {
-        itemDto.setName("");
-        mvc.perform(post("/items")
-                        .content(mapper.writeValueAsString(itemDto))
-                        .header("X-Sharer-User-Id", "1")
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-
-        itemDto.setName(" ");
-        mvc.perform(post("/items")
-                        .content(mapper.writeValueAsString(itemDto))
-                        .header("X-Sharer-User-Id", "1")
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-
-        itemDto.setName(null);
-        mvc.perform(post("/items")
-                        .content(mapper.writeValueAsString(itemDto))
-                        .header("X-Sharer-User-Id", "1")
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-
-        itemDto.setName("a".repeat(51));
-        mvc.perform(post("/items")
-                        .content(mapper.writeValueAsString(itemDto))
-                        .header("X-Sharer-User-Id", "1")
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-
-        itemDto.setName("Вещь");
-        itemDto.setDescription("");
-        mvc.perform(post("/items")
-                        .content(mapper.writeValueAsString(itemDto))
-                        .header("X-Sharer-User-Id", "1")
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-
-        itemDto.setDescription(" ");
-        mvc.perform(post("/items")
-                        .content(mapper.writeValueAsString(itemDto))
-                        .header("X-Sharer-User-Id", "1")
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-
-        itemDto.setDescription(null);
-        mvc.perform(post("/items")
-                        .content(mapper.writeValueAsString(itemDto))
-                        .header("X-Sharer-User-Id", "1")
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-
-        itemDto.setDescription("a".repeat(301));
-        mvc.perform(post("/items")
-                        .content(mapper.writeValueAsString(itemDto))
-                        .header("X-Sharer-User-Id", "1")
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-
-        itemDto.setDescription("Cупер");
-        assertThrows(NestedServletException.class, () ->
-                mvc.perform(post("/items")
-                                .content(mapper.writeValueAsString(itemDto))
-                                .header("X-Sharer-User-Id", "0")
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest()));
-
-        assertThrows(NestedServletException.class, () ->
-                mvc.perform(post("/items")
-                                .content(mapper.writeValueAsString(itemDto))
-                                .header("X-Sharer-User-Id", "-1")
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest()));
-
-        Mockito.verify(mokItemService, Mockito.never())
-                .createItem(Mockito.any(ItemDto.class), Mockito.anyLong());
-    }
-
-    @Test
     void updateTest() throws Exception {
         Mockito.when(mokItemService.updateItem(Mockito.any(ItemDto.class), Mockito.anyLong(), Mockito.anyLong()))
                 .thenReturn(itemDtoResponse);
@@ -238,48 +138,6 @@ class ItemControllerTest {
     }
 
     @Test
-    void updateTestWithIvalideIds() {
-        assertThrows(NestedServletException.class,
-                () -> mvc.perform(patch("/items/0")
-                                .content(mapper.writeValueAsString(itemDto))
-                                .header("X-Sharer-User-Id", "1")
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest()));
-
-        assertThrows(NestedServletException.class,
-                () -> mvc.perform(patch("/items/-1")
-                                .content(mapper.writeValueAsString(itemDto))
-                                .header("X-Sharer-User-Id", "1")
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest()));
-
-        assertThrows(NestedServletException.class,
-                () -> mvc.perform(patch("/items/1")
-                                .content(mapper.writeValueAsString(itemDto))
-                                .header("X-Sharer-User-Id", "0")
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest()));
-
-        assertThrows(NestedServletException.class,
-                () -> mvc.perform(patch("/items/1")
-                                .content(mapper.writeValueAsString(itemDto))
-                                .header("X-Sharer-User-Id", "-1")
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest()));
-
-        Mockito.verify(mokItemService, Mockito.never())
-                .updateItem(Mockito.any(ItemDto.class), Mockito.anyLong(), Mockito.anyLong());
-    }
-
-    @Test
     void getItemTest() throws Exception {
         Mockito
                 .when(mokItemService.getItem(1L, 1L))
@@ -314,36 +172,6 @@ class ItemControllerTest {
 
         Mockito.verify(mokItemService, Mockito.times(1))
                 .getItem(Mockito.anyLong(), Mockito.anyLong());
-    }
-
-    @Test
-    void getWithIncorrectIds() {
-        assertThrows(NestedServletException.class,
-                () -> mvc.perform(get("/items/0")
-                                .header("X-Sharer-User-Id", "1")
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest()));
-
-        assertThrows(NestedServletException.class,
-                () -> mvc.perform(get("/items/-1")
-                                .header("X-Sharer-User-Id", "1")
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest()));
-
-        assertThrows(NestedServletException.class,
-                () -> mvc.perform(get("/items/1")
-                                .header("X-Sharer-User-Id", "0")
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest()));
-
-        assertThrows(NestedServletException.class,
-                () -> mvc.perform(get("/items/1")
-                                .header("X-Sharer-User-Id", "-1")
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest()));
-
-        Mockito.verify(mokItemService, Mockito.never())
-                .updateItem(Mockito.any(ItemDto.class), Mockito.anyLong(), Mockito.anyLong());
     }
 
     @Test
@@ -391,39 +219,6 @@ class ItemControllerTest {
                 .getAllUserItems(1L, 0, 10);
         Mockito.verify(mokItemService, Mockito.times(1))
                 .getAllUserItems(1L, 0, 1);
-    }
-
-    @Test
-    void getAllUserItemsWithInvalidValues() {
-        assertThrows(NestedServletException.class,
-                () -> mvc.perform(get("/items")
-                                .header("X-Sharer-User-Id", "0")
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest()));
-
-        assertThrows(NestedServletException.class,
-                () -> mvc.perform(get("/items")
-                                .header("X-Sharer-User-Id", "-1")
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest()));
-
-        assertThrows(NestedServletException.class,
-                () -> mvc.perform(get("/items?from=-1&size=1")
-                                .header("X-Sharer-User-Id", "1")
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest()));
-
-        assertThrows(NestedServletException.class,
-                () -> mvc.perform(get("/items?from=0&size=0")
-                                .header("X-Sharer-User-Id", "1")
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest()));
-
-        assertThrows(NestedServletException.class,
-                () -> mvc.perform(get("/items?from=0&size=-1")
-                                .header("X-Sharer-User-Id", "1")
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest()));
     }
 
     @Test
@@ -482,24 +277,6 @@ class ItemControllerTest {
     }
 
     @Test
-    void incorrectSearchTest() {
-        assertThrows(NestedServletException.class,
-                () -> mvc.perform(get("/items/search?text=Вещь&from=-1&size=1")
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest()));
-
-        assertThrows(NestedServletException.class,
-                () -> mvc.perform(get("/items/search?text=Вещь&from=0&size=0")
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest()));
-
-        assertThrows(NestedServletException.class,
-                () -> mvc.perform(get("/items/search?text=Вещь&from=0&size=-1")
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest()));
-    }
-
-    @Test
     void postCommentTest() throws Exception {
         Mockito
                 .when(mokItemService.addComment(Mockito.anyLong(), Mockito.anyLong(), Mockito.any(CommentDto.class)))
@@ -535,83 +312,5 @@ class ItemControllerTest {
                         .header("X-Sharer-User-Id", "1")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-    }
-
-    @Test
-    void postCommentWithIvalideIds() {
-        assertThrows(NestedServletException.class,
-                () -> mvc.perform(post("/items/0/comment")
-                                .content(mapper.writeValueAsString(comment))
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .header("X-Sharer-User-Id", "1")
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest()));
-
-        assertThrows(NestedServletException.class,
-                () -> mvc.perform(post("/items/-1/comment")
-                                .content(mapper.writeValueAsString(comment))
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .header("X-Sharer-User-Id", "1")
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest()));
-
-        assertThrows(NestedServletException.class,
-                () -> mvc.perform(post("/items/1/comment")
-                                .content(mapper.writeValueAsString(comment))
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .header("X-Sharer-User-Id", "0")
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest()));
-
-        assertThrows(NestedServletException.class,
-                () -> mvc.perform(post("/items/1/comment")
-                                .content(mapper.writeValueAsString(comment))
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .header("X-Sharer-User-Id", "-1")
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest()));
-    }
-
-    @Test
-    void postCommentWithInvalidCommentFields() throws Exception {
-        comment.setText(null);
-        mvc.perform(post("/items/1/comment")
-                        .content(mapper.writeValueAsString(comment))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("X-Sharer-User-Id", "1")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-
-        comment.setText("");
-        mvc.perform(post("/items/1/comment")
-                        .content(mapper.writeValueAsString(comment))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("X-Sharer-User-Id", "1")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-
-        comment.setText(" ");
-        mvc.perform(post("/items/1/comment")
-                        .content(mapper.writeValueAsString(comment))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("X-Sharer-User-Id", "1")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-
-        comment.setText("a".repeat(522));
-        mvc.perform(post("/items/1/comment")
-                        .content(mapper.writeValueAsString(comment))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("X-Sharer-User-Id", "1")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
     }
 }

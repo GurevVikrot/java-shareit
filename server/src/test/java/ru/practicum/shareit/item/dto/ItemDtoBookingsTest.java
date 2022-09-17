@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item.dto;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,20 +10,15 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.status.BookingStatus;
 import ru.practicum.shareit.item.comment.dto.CommentDto;
 
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @JsonTest
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 class ItemDtoBookingsTest {
-    private static Validator validator;
     private final BookingDto lastBookingDto = new BookingDto(1,
             LocalDateTime.now(),
             LocalDateTime.now().plusDays(1), 1L, BookingStatus.APPROVED);
@@ -36,12 +30,6 @@ class ItemDtoBookingsTest {
 
     @Autowired
     private JacksonTester<ItemDtoBookings> json;
-
-    @BeforeAll
-    public static void setUp() {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        validator = factory.getValidator();
-    }
 
     @BeforeEach
     void beforeEach() {
@@ -91,53 +79,5 @@ class ItemDtoBookingsTest {
         assertThat(jsonItem).extractingJsonPathStringValue("$.comments.[0].authorName")
                 .isEqualTo(comment.getAuthorName());
         assertThat(jsonItem).extractingJsonPathStringValue("$.comments.[0].created").isNotNull();
-    }
-
-    @Test
-    void validationNameTest() {
-        itemDto.setName(null);
-        assertEquals(1, validator.validate(itemDto).size());
-
-        itemDto.setName("");
-        assertEquals(1, validator.validate(itemDto).size());
-
-        itemDto.setName(" ");
-        assertEquals(1, validator.validate(itemDto).size());
-
-        itemDto.setName("a".repeat(51));
-        assertEquals(1, validator.validate(itemDto).size());
-
-        itemDto.setName("Вещь");
-        assertEquals(0, validator.validate(itemDto).size());
-    }
-
-    @Test
-    void validationDescriptionTest() {
-        itemDto.setDescription(null);
-        assertEquals(1, validator.validate(itemDto).size());
-
-        itemDto.setDescription("");
-        assertEquals(1, validator.validate(itemDto).size());
-
-        itemDto.setDescription(" ");
-        assertEquals(1, validator.validate(itemDto).size());
-
-        itemDto.setDescription("a".repeat(301));
-        assertEquals(1, validator.validate(itemDto).size());
-
-        itemDto.setDescription("Супер");
-        assertEquals(0, validator.validate(itemDto).size());
-    }
-
-    @Test
-    void validationAvailableTest() {
-        itemDto.setAvailable(null);
-        assertEquals(1, validator.validate(itemDto).size());
-
-        itemDto.setAvailable(true);
-        assertEquals(0, validator.validate(itemDto).size());
-
-        itemDto.setAvailable(false);
-        assertEquals(0, validator.validate(itemDto).size());
     }
 }

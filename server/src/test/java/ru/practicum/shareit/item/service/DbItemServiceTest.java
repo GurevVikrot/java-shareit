@@ -45,6 +45,8 @@ class DbItemServiceTest {
             LocalDateTime.now().plusDays(2),
             LocalDateTime.now().plusDays(3), 2L, BookingStatus.APPROVED);
     private final CommentDto comment = new CommentDto(1, "Балдеж", "Vova", lastBookingDto.getEnd());
+    private final User user = new User(1L, "Vitya", "vitya@mail.ru");
+    private final ItemRequest itemRequest = new ItemRequest(1L, "Хочется", null, null, null);
     @InjectMocks
     private DbItemService itemService;
     @Mock
@@ -68,8 +70,6 @@ class DbItemServiceTest {
     private ItemDtoBookings itemDtoBookings;
     private Item item;
     private Item item1;
-    private final User user = new User(1L, "Vitya", "vitya@mail.ru");
-    private final ItemRequest itemRequest = new ItemRequest(1L, "Хочется", null, null, null);
 
     @BeforeEach
     void beforeEach() {

@@ -31,6 +31,8 @@ class DefaultBookingMapperTest {
     private final User booker = new User(2L, "Booker", "booker@mail.ru");
     private final Item item = new Item(1L, "Вещь", "Супер", true, user, null);
     private final ItemDto itemDto = new ItemDto(1L, "Вещь", "Супер", true, null);
+    private final LocalDateTime start = LocalDateTime.now().plusDays(1);
+    private final LocalDateTime end = LocalDateTime.now().plusDays(3);
     @Mock
     private ItemMapper mokItemMapper;
     @Mock
@@ -41,8 +43,6 @@ class DefaultBookingMapperTest {
     private BookingDto bookingDto;
     private RequestBookingDto requestBookingDto;
     private ResponseBookingDto bookingDto1;
-    private final LocalDateTime start = LocalDateTime.now().plusDays(1);
-    private final LocalDateTime end = LocalDateTime.now().plusDays(3);
 
     @BeforeEach
     void beforeEach() {

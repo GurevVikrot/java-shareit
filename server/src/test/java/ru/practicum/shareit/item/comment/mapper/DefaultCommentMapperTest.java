@@ -14,9 +14,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class DefaultCommentMapperTest {
     private static CommentMapper commentMapper;
+    private final LocalDateTime now = LocalDateTime.now();
     private CommentDto commentDto;
     private Comment comment;
-    private final LocalDateTime now = LocalDateTime.now();
 
     @BeforeAll
     public static void beforeAll() {

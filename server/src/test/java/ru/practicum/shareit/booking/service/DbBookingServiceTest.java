@@ -47,10 +47,6 @@ class DbBookingServiceTest {
             mokItemRepository,
             mokBookingRepository,
             bookingMapper);
-
-    private RequestBookingDto requestBookingDto;
-    private ResponseBookingDto responseBookingDto;
-    private Booking bookingFromBd;
     private final LocalDateTime start = LocalDateTime.now().plusDays(1);
     private final LocalDateTime end = LocalDateTime.now().plusDays(3);
     private final User user = new User(1L, "Vitya", "vitya@mail.ru");
@@ -58,7 +54,9 @@ class DbBookingServiceTest {
     private final UserDto bookerDto = new UserDto(2L, "Booker", "booker@mail.ru");
     private final Item item = new Item(1L, "Вещь", "Супер", true, user, null);
     private final ItemDto itemDto = new ItemDto(1L, "Вещь", "Супер", true, null);
-
+    private RequestBookingDto requestBookingDto;
+    private ResponseBookingDto responseBookingDto;
+    private Booking bookingFromBd;
 
     @BeforeEach
     void beforeEach() {

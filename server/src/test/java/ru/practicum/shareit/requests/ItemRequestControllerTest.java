@@ -10,7 +10,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.util.NestedServletException;
 import ru.practicum.shareit.requests.dto.ItemRequestDto;
 import ru.practicum.shareit.requests.service.RequestService;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -21,7 +20,6 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -75,61 +73,6 @@ class ItemRequestControllerTest {
     }
 
     @Test
-    void postRequestWithNotValideBodyTest() throws Exception {
-        Mockito
-                .when(mokRequestService.createRequest(Mockito.any(ItemRequestDto.class), Mockito.anyLong()))
-                .thenReturn(itemRequestDtoFromService);
-
-        itemRequestDto.setDescription("");
-        mvc.perform(post("/requests")
-                        .content(mapper.writeValueAsString(itemRequestDto))
-                        .header("X-Sharer-User-Id", "2")
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-
-        itemRequestDto.setDescription(" ");
-        mvc.perform(post("/requests")
-                        .content(mapper.writeValueAsString(itemRequestDto))
-                        .header("X-Sharer-User-Id", "2")
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-
-        itemRequestDto.setDescription(null);
-        mvc.perform(post("/requests")
-                        .content(mapper.writeValueAsString(itemRequestDto))
-                        .header("X-Sharer-User-Id", "2")
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void postRequestWithIncorrectUserIdTest() {
-        assertThrows(NestedServletException.class,
-                () -> mvc.perform(post("/requests")
-                                .content(mapper.writeValueAsString(itemRequestDto))
-                                .header("X-Sharer-User-Id", "0")
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest()));
-
-        assertThrows(NestedServletException.class,
-                () -> mvc.perform(post("/requests")
-                                .content(mapper.writeValueAsString(itemRequestDto))
-                                .header("X-Sharer-User-Id", "-1")
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest()));
-    }
-
-    @Test
     void getOwnerRequestsTest() throws Exception {
         Mockito
                 .when(mokRequestService.getOwnerRequests(Mockito.anyLong()))
@@ -147,24 +90,6 @@ class ItemRequestControllerTest {
                 .andExpect(jsonPath("$.[0].requester.email", is(itemRequestDtoFromService.getRequester().getEmail())))
                 .andExpect(jsonPath("$.[0].items", notNullValue()))
                 .andExpect(jsonPath("$.[0].created", notNullValue()));
-    }
-
-    @Test
-    void getOwnerRequestsWithIncorrectUserId() {
-        assertThrows(NestedServletException.class,
-                () -> mvc.perform(get("/requests")
-                                .header("X-Sharer-User-Id", "0")
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest()));
-
-        assertThrows(NestedServletException.class,
-                () -> mvc.perform(get("/requests")
-                                .content(mapper.writeValueAsString(itemRequestDto))
-                                .header("X-Sharer-User-Id", "-1")
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest()));
     }
 
     @Test
@@ -214,39 +139,6 @@ class ItemRequestControllerTest {
     }
 
     @Test
-    void getAllRequestsWithIncorrectValues() {
-        assertThrows(NestedServletException.class,
-                () -> mvc.perform(get("/requests/all?from=-1&size=1")
-                                .header("X-Sharer-User-Id", "1")
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest()));
-
-        assertThrows(NestedServletException.class,
-                () -> mvc.perform(get("/requests/all?from=0&size=0")
-                                .header("X-Sharer-User-Id", "1")
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest()));
-
-        assertThrows(NestedServletException.class,
-                () -> mvc.perform(get("/requests/all?from=0&size=-1")
-                                .header("X-Sharer-User-Id", "1")
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest()));
-
-        assertThrows(NestedServletException.class,
-                () -> mvc.perform(get("/requests/all?from=0&size=1")
-                                .header("X-Sharer-User-Id", "0")
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest()));
-
-        assertThrows(NestedServletException.class,
-                () -> mvc.perform(get("/requests/all?from=0&size=1")
-                                .header("X-Sharer-User-Id", "-1")
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest()));
-    }
-
-    @Test
     void getRequestTest() throws Exception {
         Mockito
                 .when(mokRequestService.getRequest(Mockito.anyLong(), Mockito.anyLong()))
@@ -264,32 +156,5 @@ class ItemRequestControllerTest {
                 .andExpect(jsonPath("$.requester.email", is(itemRequestDtoFromService.getRequester().getEmail())))
                 .andExpect(jsonPath("$.items", notNullValue()))
                 .andExpect(jsonPath("$.created", notNullValue()));
-    }
-
-    @Test
-    void getRequestWithIncorrectValues() {
-        assertThrows(NestedServletException.class,
-                () -> mvc.perform(get("/requests/0")
-                                .header("X-Sharer-User-Id", "2")
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isOk()));
-
-        assertThrows(NestedServletException.class,
-                () -> mvc.perform(get("/requests/-1")
-                                .header("X-Sharer-User-Id", "2")
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isOk()));
-
-        assertThrows(NestedServletException.class,
-                () -> mvc.perform(get("/requests/1")
-                                .header("X-Sharer-User-Id", "0")
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isOk()));
-
-        assertThrows(NestedServletException.class,
-                () -> mvc.perform(get("/requests/1")
-                                .header("X-Sharer-User-Id", "-1")
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isOk()));
     }
 }

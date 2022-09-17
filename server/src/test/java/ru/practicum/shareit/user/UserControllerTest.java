@@ -10,7 +10,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.util.NestedServletException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -19,7 +18,6 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -57,74 +55,6 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.name", is(userDto.getName())))
                 .andExpect(jsonPath("$.email", is(userDto.getEmail())));
-    }
-
-    @Test
-    void notValidNameRequest() throws Exception {
-        userDto.setName("");
-
-        mvc.perform(post("/users")
-                        .content(mapper.writeValueAsString(userDto))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-
-        userDto.setName(" ");
-
-        mvc.perform(post("/users")
-                        .content(mapper.writeValueAsString(userDto))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-
-        userDto.setName(null);
-
-        mvc.perform(post("/users")
-                        .content(mapper.writeValueAsString(userDto))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-
-        Mockito
-                .verify(mokUserService, Mockito.never())
-                .createUser(Mockito.any(UserDto.class));
-    }
-
-    @Test
-    void notValidEmailRequest() throws Exception {
-        userDto.setEmail("");
-
-        mvc.perform(post("/users")
-                        .content(mapper.writeValueAsString(userDto))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-
-        userDto.setEmail(" ");
-
-        mvc.perform(post("/users")
-                        .content(mapper.writeValueAsString(userDto))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-
-        userDto.setEmail(null);
-
-        mvc.perform(post("/users")
-                        .content(mapper.writeValueAsString(userDto))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-
-        Mockito
-                .verify(mokUserService, Mockito.never())
-                .createUser(Mockito.any(UserDto.class));
     }
 
     @Test
@@ -166,31 +96,6 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.name", is("Petya")))
                 .andExpect(jsonPath("$.email", is("Petya@mail.ru")));
-    }
-
-    @Test
-    void updateWithIncorrectId() {
-        // Проверка исключения т.к. mvc работает без контейнера ошибок springBoot.
-        // https://github.com/spring-projects/spring-boot/issues/7321#issuecomment-261343803
-        // Почему тогда валидация внутри DTO отрабатывает и возвращает ответ - загадка
-
-        assertThrows(NestedServletException.class, () ->
-                mvc.perform(patch("/users/0")
-                                .content(mapper.writeValueAsString(userDto))
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest()));
-
-        assertThrows(NestedServletException.class, () -> mvc.perform(patch("/users/-1")
-                .content(mapper.writeValueAsString(userDto))
-                .characterEncoding(StandardCharsets.UTF_8)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)));
-
-        Mockito
-                .verify(mokUserService, Mockito.never())
-                .updateUser(Mockito.any(UserDto.class), Mockito.anyLong());
     }
 
     @Test

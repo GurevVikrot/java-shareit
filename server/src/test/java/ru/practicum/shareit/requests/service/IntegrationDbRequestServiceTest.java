@@ -37,12 +37,12 @@ class IntegrationDbRequestServiceTest {
     private final DbItemService itemService;
     private final DbRequestService requestService;
     private final EntityManager entityManager;
-    private LocalDateTime now;
     private final ItemRequestDto itemRequestDto = new ItemRequestDto(0L, "Хочется", null, null, null);
     private final User user = new User(null, "Vitya", "vitya@mail.ru");
     private final User requester = new User(null, "Vova", "vova@mail.ru");
-    private ItemRequest itemRequest;
     private final ItemDto itemDto = new ItemDto(0L, "Вещь", "Супер", true, 1L);
+    private LocalDateTime now;
+    private ItemRequest itemRequest;
     private Item item;
 
     @BeforeEach
